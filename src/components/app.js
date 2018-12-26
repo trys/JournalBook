@@ -7,7 +7,7 @@ import Header from './header';
 // Code-splitting is automated for routes
 import Home from '../routes/home';
 import Day from '../routes/day';
-import Questions from '../routes/questions';
+import Settings from '../routes/settings';
 import Roadmap from '../routes/roadmap';
 
 const tables = [
@@ -38,7 +38,7 @@ export default class App extends Component {
         <Router onChange={this.handleRoute}>
           <Home path="/" />
           <Roadmap path="/roadmap/" />
-          <Questions path="/questions/" />
+          <Settings path="/settings/" />
           <Day path="/:year/:month/:day" />
         </Router>
       </div>

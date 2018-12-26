@@ -1,5 +1,4 @@
 import { h, Component } from 'preact';
-import style from './style';
 import idb from 'idb';
 import { Link } from 'preact-router/match';
 import { ymd, url, format } from '../../utils/date';
@@ -119,18 +118,42 @@ export default class Day extends Component {
     const isToday = ymd(today) === ymd(date);
 
     return (
-      <div>
-        <h1>
+      <div class="wrap">
+        <h1 class="day-title">
           {format(date)}
-          <Link href={url(yesterday)}>&lt;</Link>
+          <Link href={url(yesterday)}>
+            <svg
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <title>Yesterday</title>
+              <path d="M10.4 12l5.3-5.3c0.4-0.4 0.4-1 0-1.4s-1-0.4-1.4 0l-6 6c-0.4 0.4-0.4 1 0 1.4l6 6c0.2 0.2 0.5 0.3 0.7 0.3s0.5-0.1 0.7-0.3c0.4-0.4 0.4-1 0-1.4l-5.3-5.3z" />
+            </svg>
+          </Link>
           <Link disabled={isToday} href={isToday ? '' : url(tomorrow)}>
-            &gt;
+            <svg
+              version="1.1"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <title>Tomorrow</title>
+              <path d="M15.7 11.3l-6-6c-0.4-0.4-1-0.4-1.4 0s-0.4 1 0 1.4l5.3 5.3-5.3 5.3c-0.4 0.4-0.4 1 0 1.4 0.2 0.2 0.4 0.3 0.7 0.3s0.5-0.1 0.7-0.3l6-6c0.4-0.4 0.4-1 0-1.4z" />
+            </svg>
           </Link>
         </h1>
 
         {questions === null ? null : questions.length ? (
-          questions.map(({ slug, question, answer = '' }) => (
-            <div key={slug} class={style.question}>
+          questions.map(({ slug, question, answer = '' }, index) => (
+            <div
+              key={slug}
+              class="question"
+              style={`animation-delay: ${index * 300}ms`}
+            >
               <label for={slug}>{question}</label>
               <textarea
                 id={slug}
@@ -140,7 +163,7 @@ export default class Day extends Component {
             </div>
           ))
         ) : (
-          <Link href="/questions/">Write your first question</Link>
+          <Link href="/settings/">Write your first question</Link>
         )}
       </div>
     );

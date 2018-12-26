@@ -98,8 +98,9 @@ export default class Questions extends Component {
 
   render(props, { questions }) {
     return (
-      <div>
-        <h1>Questions</h1>
+      <div class="wrap">
+        <h1>Settings</h1>
+
         <form onSubmit={this.addQuestion}>
           <input type="text" name="question" />
           <input type="submit" value="Add question" />
