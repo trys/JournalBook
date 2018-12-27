@@ -32,19 +32,21 @@ export default class Day extends Component {
     const db = new DB();
 
     db.keys('questions').then(keys => {
-      Promise.all(keys.map(x => db.get('questions', x))).then(questions => {
-        Promise.all(
-          questions.map(({ slug }) => db.get('entries', `${key}_${slug}`))
-        ).then(answers => {
-          questions.forEach((question, index) => {
-            question.answer = answers[index] || '';
-          });
+      Promise.all(keys.map(x => db.get('questions', x)))
+        .then(results => results.filter(x => x.status === 'live'))
+        .then(questions => {
+          Promise.all(
+            questions.map(({ slug }) => db.get('entries', `${key}_${slug}`))
+          ).then(answers => {
+            questions.forEach((question, index) => {
+              question.answer = answers[index] || '';
+            });
 
-          this.setState({ date, db, questions, key }, () => {
-            this.setTextareaHeights();
+            this.setState({ date, db, questions, key }, () => {
+              this.setTextareaHeights();
+            });
           });
         });
-      });
     });
   };
 
