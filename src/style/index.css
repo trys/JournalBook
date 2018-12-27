@@ -24,8 +24,10 @@ html, body {
 /* Type */
 
 h1 {
-	margin: 0 0 10px;
-	font-size: 1.7em;
+	margin: 0;
+	font-size: 1.125em;
+	font-weight: 400;
+	color: #1E2357;
 }
 
 a {
@@ -41,6 +43,11 @@ a {
 	margin-left: auto;
 	margin-right: auto;
 	position: relative;
+}
+
+.wrap--padding {
+	padding-left: 0;
+	padding-right: 0;
 }
 
 
@@ -64,6 +71,7 @@ textarea {
 	outline: none;
 	appearance: none;
 	resize: none;
+	background: transparent;
 }
 
 [type="text"] {
@@ -126,11 +134,26 @@ textarea {
 	margin-right: auto;
 }
 
-/* Questions */
+/* Day */
+.traverse {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	margin-bottom: 20px;
+	padding: 0 20px;
+}
+
+
 .question {
 	animation: lift 750ms forwards;
 	opacity: 0;
 	transform: translateY(40px);
+	padding: 20px;
+}
+
+.question:nth-child(even) {
+	background: #F7F7F7;
 }
 
 @keyframes lift {
@@ -143,8 +166,4 @@ textarea {
 		opacity: 1;
 		transform: translateY(0);
 	}
-}
-
-.question + .question {
-	margin-top: 30px;
 }

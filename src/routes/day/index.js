@@ -80,34 +80,30 @@ export default class Day extends Component {
     const isToday = ymd(today) === ymd(date);
 
     return (
-      <div class="wrap">
-        <h1 class="day-title">
-          {format(date)}
+      <div class="wrap wrap--padding">
+        <header class="traverse">
           <Link href={url(yesterday)}>
-            <svg
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
+            <svg width="8" height="14" xmlns="http://www.w3.org/2000/svg">
               <title>Yesterday</title>
-              <path d="M10.4 12l5.3-5.3c0.4-0.4 0.4-1 0-1.4s-1-0.4-1.4 0l-6 6c-0.4 0.4-0.4 1 0 1.4l6 6c0.2 0.2 0.5 0.3 0.7 0.3s0.5-0.1 0.7-0.3c0.4-0.4 0.4-1 0-1.4l-5.3-5.3z" />
+              <path
+                d="M2.4 7l5.3-5.3c.4-.4.4-1 0-1.4-.4-.4-1-.4-1.4 0l-6 6c-.4.4-.4 1 0 1.4l6 6c.2.2.5.3.7.3.2 0 .5-.1.7-.3.4-.4.4-1 0-1.4L2.4 7z"
+                fill="#4951A3"
+                fill-rule="nonzero"
+              />
             </svg>
           </Link>
+          <h1>{format(date)}</h1>
           <Link disabled={isToday} href={isToday ? '' : url(tomorrow)}>
-            <svg
-              version="1.1"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-            >
+            <svg width="8" height="14" xmlns="http://www.w3.org/2000/svg">
               <title>Tomorrow</title>
-              <path d="M15.7 11.3l-6-6c-0.4-0.4-1-0.4-1.4 0s-0.4 1 0 1.4l5.3 5.3-5.3 5.3c-0.4 0.4-0.4 1 0 1.4 0.2 0.2 0.4 0.3 0.7 0.3s0.5-0.1 0.7-0.3l6-6c0.4-0.4 0.4-1 0-1.4z" />
+              <path
+                d="M7.7 6.3l-6-6C1.3-.1.7-.1.3.3c-.4.4-.4 1 0 1.4L5.6 7 .3 12.3c-.4.4-.4 1 0 1.4.2.2.4.3.7.3.3 0 .5-.1.7-.3l6-6c.4-.4.4-1 0-1.4z"
+                fill="#4951A3"
+                fill-rule="nonzero"
+              />
             </svg>
           </Link>
-        </h1>
+        </header>
 
         {questions === null ? null : questions.length ? (
           questions.map(({ slug, question, answer = '' }, index) => (
