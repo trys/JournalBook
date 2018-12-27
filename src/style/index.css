@@ -206,11 +206,11 @@ textarea {
 	display: flex;
 	justify-content: flex-end;
 	width: 100%;
-	padding: 0;
+	padding: 0 10px;
 }
 
 .header a {
-	padding: 15px 20px;
+	padding: 15px 10px;
 }
 
 .header a:first-child {
