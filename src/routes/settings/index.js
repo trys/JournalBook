@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import { DB } from '../../utils/db';
 import { slugify } from '../../utils/slugify';
+import { QuestionList } from '../../components/questionList';
 
 export default class Questions extends Component {
   state = {
@@ -50,23 +51,14 @@ export default class Questions extends Component {
   render(props, { questions }) {
     return (
       <div class="wrap">
-        <h1 class="center h1">Your Questions</h1>
-
-        {questions.map(question => (
-          <p>
-            <input
-              type="text"
-              value={question.text}
-              onInput={event =>
-                this.updateQuestion(question.slug, event.target.value)
-              }
-            />
-          </p>
-        ))}
+        <QuestionList
+          questions={questions}
+          updateQuestion={this.updateQuestion}
+        />
 
         <form onSubmit={this.addQuestion} class="add-question">
           <div>
-            <label for="add-question">Add a question</label>
+            <label for="add-question">Write your own questions</label>
             <input
               id="add-question"
               type="text"

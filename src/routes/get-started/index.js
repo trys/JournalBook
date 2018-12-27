@@ -3,6 +3,7 @@ import { DB } from '../../utils/db';
 import { slugify } from '../../utils/slugify';
 import { Link } from 'preact-router/match';
 import { url } from '../../utils/date';
+import { QuestionList } from '../../components/questionList';
 
 const today = url(new Date());
 
@@ -123,18 +124,10 @@ export default class GetStarted extends Component {
         <br />
         <br />
 
-        {questions.map((question, index) => (
-          <p>
-            <label>Q{index + 1}</label>
-            <input
-              type="text"
-              value={question.text}
-              onInput={event =>
-                this.updateQuestion(question.slug, event.target.value)
-              }
-            />
-          </p>
-        ))}
+        <QuestionList
+          questions={questions}
+          updateQuestion={this.updateQuestion}
+        />
 
         {questions && questions.length ? (
           <div class="center">
