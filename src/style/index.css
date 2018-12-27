@@ -67,7 +67,7 @@ a {
 
 /* Grid */
 .wrap {
-	max-width: 750px;
+	max-width: 800px;
 	padding-left: 20px;
 	padding-right: 20px;
 	margin-left: auto;
@@ -109,6 +109,12 @@ textarea {
 	background: rgba(150, 150, 150, 0.1);
 }
 
+[type="submit"] {
+	background: transparent;
+	border: none;
+	box-shadow: none;
+}
+
 textarea {
 	min-height: 150px;
 	padding: 0;
@@ -147,6 +153,26 @@ textarea {
 .header:before {
 	transform: rotate(4deg) translateX(-50%) translateY(-20%);
 	background: #5A88C2;
+}
+
+@media (min-width: 600px) {
+	.header:after {
+		transform: rotate(-2deg) translateX(-50%) translateY(-20%);
+	}
+
+	.header:before {
+		transform: rotate(2deg) translateX(-50%) translateY(-20%);
+	}
+}
+
+@media (min-width: 1200px) {
+	.header:after {
+		transform: rotate(-1deg) translateX(-50%) translateY(-20%);
+	}
+
+	.header:before {
+		transform: rotate(1deg) translateX(-50%) translateY(-20%);
+	}
 }
 
 .header .wrap {
