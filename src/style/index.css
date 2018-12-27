@@ -4,9 +4,8 @@ html, body {
 	padding: 0;
 	margin: 0;
 	background: #FFF;
-	font-family: 'Helvetica Neue', arial, sans-serif;
-	font-weight: 400;
-	font-size: 100%;
+	font: 400 100%/1.375 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+  Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 	color: #444;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
