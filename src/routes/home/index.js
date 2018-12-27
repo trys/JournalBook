@@ -9,7 +9,7 @@ const Home = () =>
   onboarded ? (
     <div class="wrap center home">
       <h1>This is your JournalBook</h1>
-      <img src="/assets/images/study.svg" alt="" />
+      <img src="/assets/images/study.svg" class="home-image" alt="" />
       <Link href={today} class="button">
         Start writing
       </Link>
@@ -17,7 +17,7 @@ const Home = () =>
   ) : (
     <div class="wrap wrap--thin center home">
       <h1>Welcome to JournalBook</h1>
-      <img src="/assets/images/study.svg" alt="" />
+      <img src="/assets/images/study.svg" class="home-image" alt="" />
       <Link href="/get-started/" class="button">
         Start writing
       </Link>

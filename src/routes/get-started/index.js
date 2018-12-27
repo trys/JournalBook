@@ -69,24 +69,37 @@ export default class GetStarted extends Component {
   render(props, { questions, defaultQuestions }) {
     return (
       <div class="wrap">
+        <img src="/assets/images/welcome.svg" class="home-image" alt="" />
+
         <h1 class="center h1">
-          Here are a few popular questions to get you started:
+          Here are a few popular daily questions to get you started:
         </h1>
 
-        {defaultQuestions.map(q => (
-          <button
-            type="button"
-            class="default-question"
-            disabled={questions.find(x => x.text === q)}
-            onClick={this.addDefaultQuestion}
-          >
-            {q}
-          </button>
-        ))}
+        <div class="default-questions">
+          {defaultQuestions.map(q => (
+            <button
+              type="button"
+              class="default-question"
+              disabled={questions.find(x => x.text === q)}
+              onClick={this.addDefaultQuestion}
+            >
+              {q}
+            </button>
+          ))}
+        </div>
+
+        {questions && questions.length ? (
+          <div class="center">
+            <br />
+            <Link href={today} class="button">
+              Start writing!
+            </Link>
+          </div>
+        ) : null}
 
         <form onSubmit={this.addQuestion} class="add-question">
           <div>
-            <label for="add-question">Write your own questions</label>
+            <label for="add-question">Or write your own!</label>
             <input
               id="add-question"
               type="text"

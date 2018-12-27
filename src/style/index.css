@@ -128,7 +128,7 @@ textarea {
 }
 
 [type="text"] {
-	padding: 0.5em;
+	padding: 1em;
 	background: rgba(150, 150, 150, 0.1);
 }
 
@@ -239,6 +239,7 @@ textarea {
 .add-question {
 	display: flex;
 	justify-content: flex-end;
+	align-items: flex-end;
 	width: 100%;
 	padding-top: 30px;
 	margin-top: 30px;
@@ -252,7 +253,7 @@ textarea {
 .add-question [type="submit"] {
 	flex-grow: 0;
 	margin-left: 10px;
-	padding-top: 22px;
+	margin-bottom: 18px;
 }
 
 /* Home */
@@ -265,16 +266,27 @@ textarea {
 	align-items: center;
 }
 
-.home img {
+.home-image {
 	max-width: 400px;
+	width: 80%;
 	margin: 20px auto 40px;
 }
 
 /* Onboarding */
+.default-questions {
+	display: grid;
+	grid-gap: 20px;
+}
+
+@media (min-width: 500px) {
+	.default-questions {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
 .default-question {
 	cursor: pointer;
 	width: 100%;
-	margin-bottom: 20px;
 	background: rgb(205, 219, 236);
 	border: 1px solid #EFEFEF;
 	padding: 15px 20px;
@@ -282,10 +294,12 @@ textarea {
 	font: inherit;
 	color: inherit;
 	outline: none;
+	transition: 300ms box-shadow;
 }
 
+.default-question:hover,
 .default-question:focus {
-	border: 1px solid #C2C2C2;
+	box-shadow: 0 5px 15px rgba(105, 119, 136, 0.2);
 }
 
 .default-question[disabled] {
