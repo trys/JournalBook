@@ -36,7 +36,10 @@ export class DB {
         cursor.continue();
       });
 
-      return tx.complete.then(() => keys);
+      return tx.complete.then(() => {
+        keys.reverse();
+        return keys;
+      });
     });
   }
 }

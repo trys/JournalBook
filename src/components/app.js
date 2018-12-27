@@ -8,7 +8,8 @@ import Header from './header';
 import Home from '../routes/home';
 import Day from '../routes/day';
 import Settings from '../routes/settings';
-import Roadmap from '../routes/roadmap';
+import GetStarted from '../routes/get-started';
+import NotFound from '../routes/not-found';
 
 const tables = [
   () => {},
@@ -36,9 +37,10 @@ export default class App extends Component {
         <Header />
         <Router onChange={this.handleRoute}>
           <Home path="/" />
-          <Roadmap path="/roadmap/" />
+          <GetStarted path="/get-started/" />
           <Settings path="/settings/" />
           <Day path="/:year/:month/:day" />
+          <NotFound default />
         </Router>
       </div>
     );

@@ -32,12 +32,7 @@ export default class Day extends Component {
     const db = new DB();
 
     db.keys('questions').then(keys => {
-      Promise.all(keys.map(x => db.get('questions', x))).then(results => {
-        const questions = results.map((question, index) => ({
-          slug: keys[index],
-          question
-        }));
-
+      Promise.all(keys.map(x => db.get('questions', x))).then(questions => {
         Promise.all(
           questions.map(({ slug }) => db.get('entries', `${key}_${slug}`))
         ).then(answers => {
@@ -115,18 +110,19 @@ export default class Day extends Component {
         </header>
 
         {questions === null ? null : questions.length ? (
-          questions.map(({ slug, question, answer = '' }, index) => (
+          questions.map(({ slug, text, answer = '' }, index) => (
             <div
               key={slug}
               class="question"
               style={`animation-delay: ${(index + 1) * 300}ms`}
             >
-              <label for={slug}>{question}</label>
+              <label for={slug}>{text}</label>
               <textarea
                 id={slug}
                 value={answer}
                 onInput={event => {
                   event.target.style.height = 'auto';
+                  event.target.getBoundingClientRect();
                   event.target.style.height = event.target.scrollHeight + 'px';
                   this.updateAnswer(slug, event.target.value);
                 }}

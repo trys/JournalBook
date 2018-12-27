@@ -1,11 +1,21 @@
 import { h, Component } from 'preact';
 import { DB } from '../../utils/db';
 import { slugify } from '../../utils/slugify';
+import { Link } from 'preact-router/match';
+import { url } from '../../utils/date';
 
-export default class Questions extends Component {
+const today = url(new Date());
+
+export default class GetStarted extends Component {
   state = {
     db: null,
-    questions: []
+    questions: [],
+    defaultQuestions: [
+      "What's happened today?",
+      'What are you thankful for?',
+      'What would you change about today?',
+      'Notes and musings'
+    ]
   };
 
   async componentDidMount() {
@@ -32,9 +42,7 @@ export default class Questions extends Component {
     this.setState({ questions });
   };
 
-  addQuestion = event => {
-    event.preventDefault();
-    const text = event.target.question.value;
+  addQuestionToDB = (text, callback = () => null) => {
     const slug = slugify(text);
     const question = { slug, text, status: 'live', createdAt: Date.now() };
 
@@ -43,30 +51,42 @@ export default class Questions extends Component {
       const questions = [...this.state.questions];
       questions.push(question);
       this.setState({ questions });
+      callback();
+    });
+  };
+
+  addDefaultQuestion = event => {
+    this.addQuestionToDB(event.target.textContent);
+  };
+
+  addQuestion = event => {
+    event.preventDefault();
+    this.addQuestionToDB(event.target.question.value, () => {
       event.target.reset();
     });
   };
 
-  render(props, { questions }) {
+  render(props, { questions, defaultQuestions }) {
     return (
       <div class="wrap">
-        <h1 class="center h1">Your Questions</h1>
+        <h1 class="center h1">
+          Here are a few popular questions to get you started:
+        </h1>
 
-        {questions.map(question => (
-          <p>
-            <input
-              type="text"
-              value={question.text}
-              onInput={event =>
-                this.updateQuestion(question.slug, event.target.value)
-              }
-            />
-          </p>
+        {defaultQuestions.map(q => (
+          <button
+            type="button"
+            class="default-question"
+            disabled={questions.find(x => x.text === q)}
+            onClick={this.addDefaultQuestion}
+          >
+            {q}
+          </button>
         ))}
 
         <form onSubmit={this.addQuestion} class="add-question">
           <div>
-            <label for="add-question">Add a question</label>
+            <label for="add-question">Write your own questions</label>
             <input
               id="add-question"
               type="text"
@@ -86,6 +106,31 @@ export default class Questions extends Component {
             </svg>
           </button>
         </form>
+
+        <br />
+        <br />
+
+        {questions.map((question, index) => (
+          <p>
+            <label>Q{index + 1}</label>
+            <input
+              type="text"
+              value={question.text}
+              onInput={event =>
+                this.updateQuestion(question.slug, event.target.value)
+              }
+            />
+          </p>
+        ))}
+
+        {questions && questions.length ? (
+          <div class="center">
+            <br />
+            <Link href={today} class="button">
+              Start writing!
+            </Link>
+          </div>
+        ) : null}
       </div>
     );
   }

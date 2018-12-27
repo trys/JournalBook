@@ -20,8 +20,14 @@ html, body {
 	height: 100%;
 }
 
-/* Type */
+img {
+	max-width: 100%;
+	display: block;
+	height: auto;
+	border: none;
+}
 
+/* Type */
 h1 {
 	margin: 0;
 	font-size: 1.125em;
@@ -40,6 +46,10 @@ p {
 a {
 	text-decoration: none;
 	color: inherit;
+}
+
+button {
+	cursor: pointer;
 }
 
 [disabled] {
@@ -138,7 +148,6 @@ textarea {
 	content: '';
 	width: 120%;
 	height: 120%;
-	background: red;
 	position: absolute;
 	left: 50%;
 	top: 0;
@@ -232,6 +241,35 @@ textarea {
 	margin-left: 10px;
 	padding-top: 22px;
 }
+
+/* Home */
+.home img {
+	width: 400px;
+	margin: 20px auto 40px;
+}
+
+/* Onboarding */
+.default-question {
+	cursor: pointer;
+	width: 100%;
+	margin-bottom: 20px;
+	background: rgb(205, 219, 236);
+	border: 1px solid #EFEFEF;
+	padding: 15px 20px;
+	text-align: center;
+	font: inherit;
+	color: inherit;
+	outline: none;
+}
+
+.default-question:focus {
+	border: 1px solid #C2C2C2;
+}
+
+.default-question[disabled] {
+	cursor: not-allowed;
+}
+
 
 /* Animation */
 @keyframes lift {
