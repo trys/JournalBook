@@ -28,7 +28,8 @@ img {
 }
 
 /* Type */
-h1 {
+h1,
+h2 {
 	margin: 0;
 	font-size: 1.125em;
 	font-weight: 400;
@@ -39,6 +40,10 @@ h1 {
 	margin-bottom: 20px;
 }
 
+h2 {
+	margin-bottom: 10px;
+}
+
 p {
 	margin: 0 0 20px;
 }
@@ -46,6 +51,10 @@ p {
 a {
 	text-decoration: none;
 	color: inherit;
+}
+
+p a {
+	text-decoration: underline;
 }
 
 button {
@@ -83,6 +92,10 @@ button {
 	margin-left: auto;
 	margin-right: auto;
 	position: relative;
+}
+
+.wrap--thin {
+	max-width: 540px;
 }
 
 .wrap--padding {
@@ -243,8 +256,17 @@ textarea {
 }
 
 /* Home */
+.home {
+	min-height: 100%;
+	display: flex;
+	width: 100%;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+}
+
 .home img {
-	width: 400px;
+	max-width: 400px;
 	margin: 20px auto 40px;
 }
 
