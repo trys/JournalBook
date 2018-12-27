@@ -132,7 +132,7 @@ export default class Day extends Component {
         ) : (
           <div class="center">
             <br />
-            <Link href="/settings/" class="button">
+            <Link href="/get-started/" class="button">
               Write your first question
             </Link>
           </div>

@@ -82,6 +82,11 @@ button {
 	border-radius: 4px;
 	margin: 0 0 20px;
 	font-size: 12px;
+	transition: 300ms box-shadow;
+}
+
+.button:hover {
+	box-shadow: 0 2px 10px rgba(105, 119, 136, 0.5);
 }
 
 /* Grid */
