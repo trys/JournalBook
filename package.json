@@ -21,10 +21,12 @@
   "devDependencies": {
     "eslint": "^4.9.0",
     "eslint-config-synacor": "^2.0.2",
+    "fast-async": "^6.3.8",
     "identity-obj-proxy": "^3.0.0",
     "per-env": "^1.0.2",
     "preact-cli": "^2.1.0",
     "preact-cli-plugin-env-vars": "^1.2.1",
+    "preact-cli-plugin-netlify": "^1.1.0",
     "preact-render-spy": "^1.2.1"
   },
   "dependencies": {
