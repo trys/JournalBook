@@ -206,11 +206,11 @@ textarea {
 	display: flex;
 	justify-content: flex-end;
 	width: 100%;
-	padding: 0;
+	padding: 0 10px;
 }
 
 .header a {
-	padding: 15px 20px;
+	padding: 15px 10px;
 }
 
 .header a:first-child {
@@ -323,4 +323,70 @@ textarea {
 		opacity: 1;
 		transform: translateY(0);
 	}
+}
+
+
+/* Toggle */
+.toggle {
+	text-transform: none;
+	font-weight: 400;
+	padding-left: 3em;
+	position: relative;
+	cursor: pointer;
+	display: inline-block;
+}
+
+.toggle i {
+	width: 2.5em;
+	height: 1.25em;
+	border: 1px solid #DDD;
+	position: absolute;
+	border-radius: 1em;
+	transition: 300ms background-color;
+	left: 0;
+	top: 0;
+}
+
+.toggle i:before {
+	content: '';
+	position: absolute;
+	left: -1px;
+	top: -1px;
+	border-radius: 50%;
+	width: 50%;
+	height: 100%;
+	border: 1px solid #DDD;
+	background: #FFF;
+	transition: 300ms transform;
+}
+
+.toggle input {
+	border: 0;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+	word-wrap: normal !important;
+}
+
+.toggle input:checked + i {
+	background-color: #5e65ba;
+}
+
+.toggle input:checked + i:before {
+	transform: translateX(100%) translateX(-2px);
+}
+
+.edit-question {
+	position: relative;
+}
+
+.edit-question .toggle {
+	position: absolute;
+	right: 0;
+	top: 0;
 }

@@ -29,7 +29,7 @@ export default class GetStarted extends Component {
     });
   }
 
-  updateQuestion = (slug, value) => {
+  updateQuestion = (slug, value, attribute = 'text') => {
     const questions = [...this.state.questions];
     const question = questions.find(x => x.slug === slug);
     if (!question) {
@@ -37,10 +37,14 @@ export default class GetStarted extends Component {
     }
 
     const { key } = this.state;
-    question.text = value;
+    question[attribute] = value;
     this.state.db.set('questions', slug, question);
 
     this.setState({ questions });
+  };
+
+  updateQuestionStatus = (slug, value) => {
+    this.updateQuestion(slug, value, 'status');
   };
 
   addQuestionToDB = (text, callback = () => null) => {
@@ -127,6 +131,7 @@ export default class GetStarted extends Component {
         <QuestionList
           questions={questions}
           updateQuestion={this.updateQuestion}
+          updateQuestionStatus={this.updateQuestionStatus}
         />
 
         {questions && questions.length ? (
