@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { Toggle } from '../toggle';
+import { Toggle } from '../Toggle';
 
 const QuestionList = ({ questions, updateQuestion, updateQuestionStatus }) => {
   return !questions.length ? null : (
@@ -15,7 +15,7 @@ const QuestionList = ({ questions, updateQuestion, updateQuestionStatus }) => {
           />
           {updateQuestionStatus && (
             <Toggle
-              label="Live"
+              label="Active"
               on={question.status === 'live'}
               onToggle={() =>
                 updateQuestionStatus(
