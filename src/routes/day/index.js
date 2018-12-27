@@ -119,7 +119,7 @@ export default class Day extends Component {
             <div
               key={slug}
               class="question"
-              style={`animation-delay: ${index * 300}ms`}
+              style={`animation-delay: ${(index + 1) * 300}ms`}
             >
               <label for={slug}>{question}</label>
               <textarea

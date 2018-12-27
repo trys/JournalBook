@@ -53,7 +53,7 @@ export default class Questions extends Component {
 
     this.state.db.set('questions', slug, question).then(x => {
       const questions = [...this.state.questions];
-      questions.push({ slug, question });
+      questions.unshift({ slug, question });
       this.setState({ questions });
       event.target.reset();
     });
@@ -83,6 +83,7 @@ export default class Questions extends Component {
               id="add-question"
               type="text"
               name="question"
+              required
               placeholder="e.g. What are you grateful for?"
             />
           </div>

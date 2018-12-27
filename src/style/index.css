@@ -42,6 +42,11 @@ a {
 	color: inherit;
 }
 
+[disabled] {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
 .center {
 	text-align: center;
 }
@@ -167,11 +172,12 @@ textarea {
 	width: 100%;
 	margin-bottom: 20px;
 	padding: 0 20px;
+	animation: lift 750ms forwards;
 }
-
 
 .question {
 	animation: lift 750ms forwards;
+	animation-delay: 300ms;
 	opacity: 0;
 	transform: translateY(40px);
 	padding: 20px;
@@ -179,18 +185,6 @@ textarea {
 
 .question:nth-child(even) {
 	background: #F7F7F7;
-}
-
-@keyframes lift {
-	0% {
-		opacity: 0;
-		transform: translateY(40px);
-	}
-
-	100% {
-		opacity: 1;
-		transform: translateY(0);
-	}
 }
 
 /* Settings */
@@ -210,5 +204,18 @@ textarea {
 .add-question [type="submit"] {
 	flex-grow: 0;
 	margin-left: 10px;
-	padding-top: 20px;
+	padding-top: 22px;
+}
+
+/* Animation */
+@keyframes lift {
+	0% {
+		opacity: 0;
+		transform: translateY(40px);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
