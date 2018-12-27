@@ -45,11 +45,20 @@ export default class Day extends Component {
             question.answer = answers[index] || '';
           });
 
-          this.setState({ date, db, questions, key });
+          this.setState({ date, db, questions, key }, () => {
+            this.setTextareaHeights();
+          });
         });
       });
     });
   };
+
+  setTextareaHeights() {
+    [].forEach.call(document.querySelectorAll('textarea'), el => {
+      el.style.height = 'auto';
+      el.style.height = el.scrollHeight + 'px';
+    });
+  }
 
   updateAnswer = (slug, answer) => {
     const questions = [...this.state.questions];
@@ -116,7 +125,11 @@ export default class Day extends Component {
               <textarea
                 id={slug}
                 value={answer}
-                onInput={event => this.updateAnswer(slug, event.target.value)}
+                onInput={event => {
+                  event.target.style.height = 'auto';
+                  event.target.style.height = event.target.scrollHeight + 'px';
+                  this.updateAnswer(slug, event.target.value);
+                }}
               />
             </div>
           ))
