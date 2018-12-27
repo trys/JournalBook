@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
-import idb from 'idb';
 import { Link } from 'preact-router/match';
 import { ymd, url, format } from '../../utils/date';
+import { DB } from '../../utils/db';
 
 export default class Day extends Component {
   state = {
@@ -29,62 +29,24 @@ export default class Day extends Component {
       return;
     }
 
-    const dbPromise = idb.open('entries-store');
+    const db = new DB();
 
-    const db = {
-      get(key, table = 'entries') {
-        return dbPromise.then(db => {
-          return db
-            .transaction(table)
-            .objectStore(table)
-            .get(key);
-        });
-      },
-      set(key, val, table = 'entries') {
-        return dbPromise.then(db => {
-          const tx = db.transaction(table, 'readwrite');
-          tx.objectStore(table).put(val, key);
-          return tx.complete;
-        });
-      },
-      keys(table = 'questions') {
-        return dbPromise.then(db => {
-          const tx = db.transaction(table);
-          const keys = [];
-          const store = tx.objectStore(table);
-
-          // This would be store.getAllKeys(), but it isn't supported by Edge or Safari.
-          // openKeyCursor isn't supported by Safari, so we fall back
-          (store.iterateKeyCursor || store.iterateCursor).call(
-            store,
-            cursor => {
-              if (!cursor) return;
-              keys.push(cursor.key);
-              cursor.continue();
-            }
-          );
-
-          return tx.complete.then(() => keys);
-        });
-      }
-    };
-
-    db.keys().then(keys => {
-      Promise.all(keys.map(x => db.get(x, 'questions'))).then(results => {
+    db.keys('questions').then(keys => {
+      Promise.all(keys.map(x => db.get('questions', x))).then(results => {
         const questions = results.map((question, index) => ({
           slug: keys[index],
           question
         }));
 
-        Promise.all(questions.map(({ slug }) => db.get(`${key}_${slug}`))).then(
-          answers => {
-            questions.forEach((question, index) => {
-              question.answer = answers[index] || '';
-            });
+        Promise.all(
+          questions.map(({ slug }) => db.get('entries', `${key}_${slug}`))
+        ).then(answers => {
+          questions.forEach((question, index) => {
+            question.answer = answers[index] || '';
+          });
 
-            this.setState({ date, db, questions, key });
-          }
-        );
+          this.setState({ date, db, questions, key });
+        });
       });
     });
   };
@@ -98,7 +60,7 @@ export default class Day extends Component {
 
     const { key } = this.state;
     question.answer = answer;
-    this.state.db.set(`${key}_${slug}`, answer);
+    this.state.db.set('entries', `${key}_${slug}`, answer);
 
     this.setState({ questions });
   };

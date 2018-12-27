@@ -25,7 +25,6 @@ export default class App extends Component {
     const key = Number(process.env.PREACT_APP_DB_VERSION);
     const dbPromise = idb.open('entries-store', key, upgradeDB => {
       for (let index = upgradeDB.oldVersion + 1; index <= key; index++) {
-        console.log(index);
         tables[index] && tables[index](upgradeDB);
       }
     });

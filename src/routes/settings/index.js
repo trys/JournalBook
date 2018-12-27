@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import idb from 'idb';
+import { DB } from '../../utils/db';
 
 function slugify(text) {
   return text
@@ -19,48 +19,10 @@ export default class Questions extends Component {
   };
 
   async componentDidMount() {
-    const dbPromise = idb.open('entries-store');
+    const db = new DB();
 
-    const db = {
-      get(key) {
-        return dbPromise.then(db => {
-          return db
-            .transaction('questions')
-            .objectStore('questions')
-            .get(key);
-        });
-      },
-      set(key, val) {
-        return dbPromise.then(db => {
-          const tx = db.transaction('questions', 'readwrite');
-          tx.objectStore('questions').put(val, key);
-          return tx.complete;
-        });
-      },
-      keys() {
-        return dbPromise.then(db => {
-          const tx = db.transaction('questions');
-          const keys = [];
-          const store = tx.objectStore('questions');
-
-          // This would be store.getAllKeys(), but it isn't supported by Edge or Safari.
-          // openKeyCursor isn't supported by Safari, so we fall back
-          (store.iterateKeyCursor || store.iterateCursor).call(
-            store,
-            cursor => {
-              if (!cursor) return;
-              keys.push(cursor.key);
-              cursor.continue();
-            }
-          );
-
-          return tx.complete.then(() => keys);
-        });
-      }
-    };
-
-    db.keys().then(keys => {
-      Promise.all(keys.map(x => db.get(x))).then(results => {
+    db.keys('questions').then(keys => {
+      Promise.all(keys.map(x => db.get('questions', x))).then(results => {
         const questions = results.map((question, index) => ({
           slug: keys[index],
           question
@@ -79,7 +41,7 @@ export default class Questions extends Component {
 
     const { key } = this.state;
     question.question = value;
-    this.state.db.set(slug, value);
+    this.state.db.set('questions', slug, value);
 
     this.setState({ questions });
   };
@@ -88,7 +50,8 @@ export default class Questions extends Component {
     event.preventDefault();
     const question = event.target.question.value;
     const slug = slugify(question);
-    this.state.db.set(slug, question).then(x => {
+
+    this.state.db.set('questions', slug, question).then(x => {
       const questions = [...this.state.questions];
       questions.push({ slug, question });
       this.setState({ questions });
