@@ -1,6 +1,6 @@
 {
-  "name": "Journal",
-  "short_name": "Journal",
+  "name": "JournalBook",
+  "short_name": "JournalBook",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

@@ -7,13 +7,17 @@ const Header = () => (
       <Link href="/">
         <svg width="27" height="20" xmlns="http://www.w3.org/2000/svg">
           <title>Home</title>
-          <path
-            d="M24.9 19l-5.36-9 5.37-9H3a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h21.9z"
-            stroke="currentColor"
-            stroke-width="2"
-            fill="none"
-            fill-rule="evenodd"
-          />
+          <g fill="none" fill-rule="evenodd">
+            <path
+              d="M24.9 19l-5.36-9 5.37-9H3a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h21.9z"
+              stroke="#FFF"
+              stroke-width="2"
+            />
+            <path
+              d="M8.74 11.89h1.36c0 .64.45 1.06 1.11 1.06.73 0 1.13-.44 1.13-1.28V6.25h1.38v5.44c0 1.59-.94 2.5-2.5 2.5-1.48 0-2.48-.9-2.48-2.3z"
+              fill="#FFF"
+            />
+          </g>
         </svg>
       </Link>
       <Link href="/settings/">

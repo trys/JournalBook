@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "Journal",
+  "name": "JournalBook",
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
