@@ -74,7 +74,7 @@ export default class Questions extends Component {
 
         <hr />
 
-        <ScaryButton onClick={() => alert('d')}>Delete your data</ScaryButton>
+        <ScaryButton onClick={this.deleteData}>Delete your data</ScaryButton>
       </div>
     );
   }

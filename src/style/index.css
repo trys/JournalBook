@@ -95,6 +95,15 @@ hr {
 	box-shadow: 0 2px 10px rgba(105, 119, 136, 0.5);
 }
 
+.button--grey {
+	background: rgb(200, 200, 200);
+	color: inherit;
+}
+
+.button--grey:hover {
+	box-shadow: 0 2px 10px rgba(200, 200, 200, 0.5);
+}
+
 .button--scary {
 	background: rgb(190, 31, 31);
 }
@@ -403,4 +412,15 @@ textarea {
 	position: absolute;
 	right: 0;
 	top: 0;
+}
+
+/* Delete Data */
+.delete-data {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+
+.delete-data button:first-child {
+	margin-right: 20px;
 }
