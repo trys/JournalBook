@@ -34,6 +34,24 @@ a {
 	color: inherit;
 }
 
+.center {
+	text-align: center;
+}
+
+.button {
+	display: inline-block;
+	background: #3840A2;
+	color: #FFF;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.1em;
+	padding: 15px 25px;
+	line-height: 1;
+	border-radius: 4px;
+	margin: 0 0 20px;
+	font-size: 12px;
+}
+
 /* Grid */
 .wrap {
 	max-width: 750px;
