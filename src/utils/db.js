@@ -24,6 +24,14 @@ export class DB {
     });
   }
 
+  clear(table) {
+    return this.db.then(db => {
+      const tx = db.transaction(table, 'readwrite');
+      tx.objectStore(table).clear();
+      return tx.complete;
+    });
+  }
+
   keys(table) {
     return this.db.then(db => {
       const tx = db.transaction(table);
