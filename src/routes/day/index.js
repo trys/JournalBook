@@ -134,7 +134,12 @@ export default class Day extends Component {
             </div>
           ))
         ) : (
-          <Link href="/settings/">Write your first question</Link>
+          <div class="center">
+            <br />
+            <Link href="/settings/" class="button">
+              Write your first question
+            </Link>
+          </div>
         )}
       </div>
     );
