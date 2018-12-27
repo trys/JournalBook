@@ -29,6 +29,14 @@ h1 {
 	color: #1E2357;
 }
 
+.h1 {
+	margin-bottom: 20px;
+}
+
+p {
+	margin: 0 0 20px;
+}
+
 a {
 	text-decoration: none;
 	color: inherit;
@@ -86,14 +94,14 @@ textarea {
 	font: inherit;
 	color: inherit;
 	outline: none;
-	appearance: none;
+	-webkit-appearance: none;
 	resize: none;
 	background: transparent;
 }
 
 [type="text"] {
 	padding: 0.5em;
-	background: rgba(0, 0, 0, 0.1);
+	background: rgba(150, 150, 150, 0.1);
 }
 
 textarea {
@@ -183,4 +191,24 @@ textarea {
 		opacity: 1;
 		transform: translateY(0);
 	}
+}
+
+/* Settings */
+.add-question {
+	display: flex;
+	justify-content: flex-end;
+	width: 100%;
+	padding-top: 30px;
+	margin-top: 30px;
+	border-top: 1px solid #F7F7F7;
+}
+
+.add-question > * {
+	flex: 1;
+}
+
+.add-question [type="submit"] {
+	flex-grow: 0;
+	margin-left: 10px;
+	padding-top: 20px;
 }
