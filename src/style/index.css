@@ -247,8 +247,11 @@ textarea {
 	align-items: center;
 	width: 100%;
 	margin-bottom: 20px;
-	padding: 0 20px;
 	animation: lift 750ms forwards;
+}
+
+.traverse a {
+	padding: 0 20px;
 }
 
 .question {
