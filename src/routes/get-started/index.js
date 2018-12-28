@@ -74,7 +74,7 @@ export default class GetStarted extends Component {
 
   render(props, { questions, defaultQuestions }) {
     return (
-      <div class="wrap">
+      <div class="wrap lift-children">
         <img src="/assets/images/welcome.svg" class="home-image" alt="" />
 
         <h1 class="center h1">

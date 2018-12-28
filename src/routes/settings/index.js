@@ -63,7 +63,7 @@ export default class Questions extends Component {
 
   render(props, { questions }) {
     return (
-      <div class="wrap">
+      <div class="wrap lift-children">
         <QuestionList
           questions={questions}
           updateQuestion={this.updateQuestion}

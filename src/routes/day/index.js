@@ -132,7 +132,7 @@ export default class Day extends Component {
             </div>
           ))
         ) : (
-          <div class="center">
+          <div class="center lift">
             <br />
             <Link href="/get-started/" class="button">
               Write your first question
