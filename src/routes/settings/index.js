@@ -11,6 +11,7 @@ export default class Questions extends Component {
     db: null,
     questions: [],
     exporting: 0,
+    importing: false,
     files: []
   };
 
@@ -104,11 +105,11 @@ export default class Questions extends Component {
       this.setState({ exporting: 1, files: [] });
 
       const data = await this.getData();
-      var bb = new Blob([JSON.stringify(data)], { type: MIME_TYPE });
+      const blob = new Blob([JSON.stringify(data)], { type: MIME_TYPE });
 
       const file = {
         name: `journalbook_${ymd()}.json`,
-        data: window.URL.createObjectURL(bb)
+        data: window.URL.createObjectURL(blob)
       };
       this.setState({ files: [file], exporting: 2 });
     } catch (e) {
@@ -117,14 +118,51 @@ export default class Questions extends Component {
     }
   };
 
+  importData = async event => {
+    const reader = new FileReader();
+    const file = event.target.files[0];
+    this.setState({ importing: true });
+
+    reader.onload = (() => {
+      return e => {
+        const { entries, questions } = JSON.parse(e.target.result);
+        if (!entries || !questions) {
+          return;
+        }
+
+        const questionKeys = Object.keys(questions);
+        questionKeys.map(async key => {
+          const current = await this.state.db.get('questions', key);
+          if (!current) {
+            await this.state.db.set('questions', key, questions[key]);
+          }
+        });
+
+        const entryKeys = Object.keys(entries);
+        entryKeys.map(async key => {
+          const current = await this.state.db.get('entries', key);
+          if (!current) {
+            await this.state.db.set('entries', key, entries[key]);
+          }
+        });
+
+        localStorage.setItem('journalbook_onboarded', true);
+
+        window.location.reload();
+      };
+    })();
+
+    reader.readAsText(file);
+  };
+
   deleteData = async () => {
-    await this.state.db.clear('questions');
+    await this.state.db.clear('entries');
     await this.state.db.clear('questions');
     localStorage.removeItem('journalbook_onboarded');
     window.location.href = '/';
   };
 
-  render(props, { questions, exporting, files }) {
+  render(props, { questions, exporting, files, importing }) {
     return (
       <div class="wrap lift-children">
         <QuestionList
@@ -164,9 +202,16 @@ export default class Questions extends Component {
             </button>
           )}
 
-          {/* <button type="button" class="button button--grey">
-            Import
-          </button> */}
+          <input
+            type="file"
+            class="screen-reader-only"
+            id="import"
+            onChange={this.importData}
+            accept="application/json"
+          />
+          <label for="import" class="button button--grey">
+            {importing ? 'Importing...' : 'Import'}
+          </label>
 
           <ScaryButton onClick={this.deleteData}>Delete your data</ScaryButton>
         </div>
