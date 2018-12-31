@@ -112,6 +112,10 @@ hr {
 	box-shadow: 0 2px 10px rgba(190, 31, 31, 0.5);
 }
 
+.button--space {
+	margin-right: 10px;
+}
+
 /* Grid */
 .wrap {
 	max-width: 800px;

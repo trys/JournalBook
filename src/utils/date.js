@@ -6,7 +6,7 @@ export const url = (date = new Date()) => {
   )}/`;
 };
 
-export const ymd = date => {
+export const ymd = (date = new Date()) => {
   return `${date.getFullYear()}${date.getMonth()}${date.getDate()}`;
 };
 

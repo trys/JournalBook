@@ -50,4 +50,13 @@ export class DB {
       });
     });
   }
+
+  getAll(table) {
+    return this.db.then(db => {
+      return db
+        .transaction(table)
+        .objectStore(table)
+        .getAll();
+    });
+  }
 }
