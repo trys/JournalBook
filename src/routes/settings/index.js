@@ -146,6 +146,8 @@ export default class Questions extends Component {
           }
         });
 
+        localStorage.setItem('journalbook_onboarded', true);
+
         window.location.reload();
       };
     })();
