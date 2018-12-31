@@ -28,7 +28,7 @@ const Home = () =>
         <p>
           Your notes are <strong>only</strong> stored on your device, they're
           never even sent to a server. You don't even need to sign-in to use it!
-          It's works offline, so you can reflect upon your day on the slow train
+          It works offline, so you can reflect upon your day on the slow train
           journey home.
         </p>
         <p>
