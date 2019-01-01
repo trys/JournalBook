@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import { Toggle } from '../Toggle';
 
-const QuestionList = ({ questions, updateQuestion, updateQuestionStatus }) => {
-  return !questions.length ? null : (
+const QuestionList = ({ questions, updateQuestion, updateQuestionStatus }) =>
+  !questions.length ? null : (
     <div>
       <h2 class="center">Your questions</h2>
       {questions.map((question, index) => (
@@ -29,6 +29,5 @@ const QuestionList = ({ questions, updateQuestion, updateQuestionStatus }) => {
       ))}
     </div>
   );
-};
 
 export { QuestionList };

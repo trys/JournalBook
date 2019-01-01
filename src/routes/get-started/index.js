@@ -16,8 +16,8 @@ export default class GetStarted extends Component {
       "What's happened today?",
       'What are you thankful for?',
       'What would you change about today?',
-      'Notes and musings'
-    ]
+      'Notes and musings',
+    ],
   };
 
   async componentDidMount() {
@@ -37,7 +37,6 @@ export default class GetStarted extends Component {
       return;
     }
 
-    const { key } = this.state;
     question[attribute] = value;
     this.state.db.set('questions', slug, question);
 

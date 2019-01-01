@@ -8,12 +8,12 @@ export class DB {
   }
 
   get(table, key) {
-    return this.db.then(db => {
-      return db
+    return this.db.then(db =>
+      db
         .transaction(table)
         .objectStore(table)
-        .get(key);
-    });
+        .get(key)
+    );
   }
 
   set(table, key, val) {
@@ -52,11 +52,11 @@ export class DB {
   }
 
   getAll(table) {
-    return this.db.then(db => {
-      return db
+    return this.db.then(db =>
+      db
         .transaction(table)
         .objectStore(table)
-        .getAll();
-    });
+        .getAll()
+    );
   }
 }
