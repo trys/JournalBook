@@ -31,6 +31,24 @@ export default class App extends Component {
     });
   }
 
+  handleRoute = () => {
+    this.track();
+  };
+
+  track = () => {
+    if (!navigator.sendBeacon || !process.env.PREACT_APP_TRACKING) {
+      return;
+    }
+
+    navigator.sendBeacon(
+      process.env.PREACT_APP_TRACKING,
+      JSON.stringify({
+        type: 'hit',
+        url: window.location.pathname
+      })
+    );
+  };
+
   render() {
     return (
       <div id="app">
