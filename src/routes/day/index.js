@@ -13,8 +13,6 @@ export default class Day extends Component {
 
   componentDidMount() {
     this.getData(this.props);
-
-    console.log(this.props);
   }
 
   componentWillReceiveProps(props) {
