@@ -8,7 +8,7 @@ export default class Day extends Component {
     date: null,
     db: null,
     questions: null,
-    key: ''
+    key: '',
   };
 
   componentDidMount() {

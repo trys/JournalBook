@@ -12,7 +12,7 @@ export default class Questions extends Component {
     questions: [],
     exporting: 0,
     importing: false,
-    files: []
+    files: [],
   };
 
   async componentDidMount() {
@@ -32,7 +32,6 @@ export default class Questions extends Component {
       return;
     }
 
-    const { key } = this.state;
     question[attribute] = value;
     this.state.db.set('questions', slug, question);
 
@@ -78,12 +77,12 @@ export default class Questions extends Component {
 
       return {
         questions,
-        entries
+        entries,
       };
     } catch (e) {
       return {
         questions: {},
-        entries: {}
+        entries: {},
       };
     }
   };
@@ -109,7 +108,7 @@ export default class Questions extends Component {
 
       const file = {
         name: `journalbook_${ymd()}.json`,
-        data: window.URL.createObjectURL(blob)
+        data: window.URL.createObjectURL(blob),
       };
       this.setState({ files: [file], exporting: 2 });
     } catch (e) {
@@ -123,33 +122,31 @@ export default class Questions extends Component {
     const file = event.target.files[0];
     this.setState({ importing: true });
 
-    reader.onload = (() => {
-      return e => {
-        const { entries, questions } = JSON.parse(e.target.result);
-        if (!entries || !questions) {
-          return;
+    reader.onload = (() => e => {
+      const { entries, questions } = JSON.parse(e.target.result);
+      if (!entries || !questions) {
+        return;
+      }
+
+      const questionKeys = Object.keys(questions);
+      questionKeys.map(async key => {
+        const current = await this.state.db.get('questions', key);
+        if (!current) {
+          await this.state.db.set('questions', key, questions[key]);
         }
+      });
 
-        const questionKeys = Object.keys(questions);
-        questionKeys.map(async key => {
-          const current = await this.state.db.get('questions', key);
-          if (!current) {
-            await this.state.db.set('questions', key, questions[key]);
-          }
-        });
+      const entryKeys = Object.keys(entries);
+      entryKeys.map(async key => {
+        const current = await this.state.db.get('entries', key);
+        if (!current) {
+          await this.state.db.set('entries', key, entries[key]);
+        }
+      });
 
-        const entryKeys = Object.keys(entries);
-        entryKeys.map(async key => {
-          const current = await this.state.db.get('entries', key);
-          if (!current) {
-            await this.state.db.set('entries', key, entries[key]);
-          }
-        });
+      localStorage.setItem('journalbook_onboarded', true);
 
-        localStorage.setItem('journalbook_onboarded', true);
-
-        window.location.reload();
-      };
+      window.location.reload();
     })();
 
     reader.readAsText(file);

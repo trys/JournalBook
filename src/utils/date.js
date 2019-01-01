@@ -1,14 +1,12 @@
 export const double = n => (n < 9 ? `0${n}` : n);
 
-export const url = (date = new Date()) => {
-  return `/${date.getFullYear()}/${double(date.getMonth() + 1)}/${double(
+export const url = (date = new Date()) =>
+  `/${date.getFullYear()}/${double(date.getMonth() + 1)}/${double(
     date.getDate()
   )}/`;
-};
 
-export const ymd = (date = new Date()) => {
-  return `${date.getFullYear()}${date.getMonth()}${date.getDate()}`;
-};
+export const ymd = (date = new Date()) =>
+  `${date.getFullYear()}${date.getMonth()}${date.getDate()}`;
 
 export const ordinal = n => {
   switch (n) {
@@ -40,7 +38,7 @@ export const format = date => {
     'Sep',
     'Oct',
     'Nov',
-    'Dec'
+    'Dec',
   ];
 
   return `${ordinal(date.getDate())} ${

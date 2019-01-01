@@ -1,0 +1,11 @@
+{
+  "extends": ["eslint-config-synacor", "plugin:prettier/recommended"],
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "rules": {
+    "react/jsx-indent-props": [2, 2],
+    "react/jsx-no-bind": "off",
+    "react/sort-comp": "off"
+  }
+}

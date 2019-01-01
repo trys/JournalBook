@@ -1,3 +1,4 @@
+/* eslint-disable */
 export function slugify(text) {
   return text
     .toString()

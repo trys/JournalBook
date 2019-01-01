@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 
 class ScaryButton extends Component {
   state = {
-    clicked: 0
+    clicked: 0,
   };
 
   onClick = () => {
@@ -20,7 +20,7 @@ class ScaryButton extends Component {
     {
       children,
       fallbackOne = 'Are you certain?',
-      cancel = 'Cancel and return to safety'
+      cancel = 'Cancel and return to safety',
     },
     { clicked }
   ) {
