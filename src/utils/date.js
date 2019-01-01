@@ -1,3 +1,21 @@
+/**
+ * Returns  0 if dates are equal
+ * Returns  1 if a > b
+ * Returns -1 if b > a
+ */
+export const compare = (a, b) => {
+  a = new Date(a);
+  b = new Date(b);
+
+  if (a > b) {
+    return 1;
+  } else if (b > a) {
+    return -1;
+  }
+
+  return 0;
+};
+
 export const double = n => (n < 9 ? `0${n}` : n);
 
 export const url = (date = new Date()) =>
