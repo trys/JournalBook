@@ -8,19 +8,19 @@ function shouldBlockBeacon() {
 }
 
 export const sendBeacon = type => {
-  if (!navigator.sendBeacon || !process.env.PREACT_APP_TRACKING) {
+  if (
+    !navigator.sendBeacon ||
+    !process.env.PREACT_APP_TRACKING ||
+    shouldBlockBeacon()
+  ) {
     return;
   }
 
-  if (!shouldBlockBeacon()) {
-    navigator.sendBeacon(
-      process.env.PREACT_APP_TRACKING,
-      JSON.stringify({
-        type,
-        url: window.location.pathname,
-      })
-    );
-  } else {
-    return;
-  }
+  navigator.sendBeacon(
+    process.env.PREACT_APP_TRACKING,
+    JSON.stringify({
+      type,
+      url: window.location.pathname,
+    })
+  );
 };
