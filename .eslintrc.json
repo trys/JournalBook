@@ -6,6 +6,7 @@
   "rules": {
     "react/jsx-indent-props": [2, 2],
     "react/jsx-no-bind": "off",
-    "react/sort-comp": "off"
+    "react/sort-comp": "off",
+    "no-console": "off"
   }
 }

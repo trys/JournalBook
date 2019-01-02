@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import { Link } from 'preact-router/match';
-import { ymd, url, format } from '../../utils/date';
+import { ymd, url, format, compare } from '../../utils/date';
 import { DB } from '../../utils/db';
 
 export default class Day extends Component {
@@ -24,8 +24,8 @@ export default class Day extends Component {
     const date = new Date(year, Number(month) - 1, day);
     const key = ymd(date);
 
-    if (date.toString() === 'Invalid Date') {
-      window.location.href = '/';
+    if (date.toString() === 'Invalid Date' || compare(date, new Date()) === 1) {
+      window.location.href = url();
       return;
     }
 
