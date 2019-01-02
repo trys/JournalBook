@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import { Router } from 'preact-router';
 import idb from 'idb';
-
+import { sendBeacon } from '../utils/beacon';
 import Header from './Header';
 
 // Code-splitting is automated for routes
@@ -32,21 +32,7 @@ export default class App extends Component {
   }
 
   handleRoute = () => {
-    this.track();
-  };
-
-  track = () => {
-    if (!navigator.sendBeacon || !process.env.PREACT_APP_TRACKING) {
-      return;
-    }
-
-    navigator.sendBeacon(
-      process.env.PREACT_APP_TRACKING,
-      JSON.stringify({
-        type: 'hit',
-        url: window.location.pathname
-      })
-    );
+    sendBeacon('hit');
   };
 
   render() {
