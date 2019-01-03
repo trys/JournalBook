@@ -26,7 +26,7 @@ export const url = (date = new Date()) =>
 export const ymd = (date = new Date()) => {
   const pad = n => (n < 10 ? "0" : "") + n;
   const y = date.getFullYear();
-	const m = pad(date.getMonth() + 1);
+  const m = pad(date.getMonth() + 1);
   const d = pad(date.getDate());
 
   return `${y}${m}${d}` // Example: 20190103
