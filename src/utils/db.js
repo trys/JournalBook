@@ -24,6 +24,14 @@ export class DB {
     });
   }
 
+  delete(table, key) {
+    return this.db.then(db => {
+      const tx = db.transaction(table, 'readwrite');
+      tx.objectStore(table).delete(key);
+      return tx.complete;
+    });
+  }
+
   clear(table) {
     return this.db.then(db => {
       const tx = db.transaction(table, 'readwrite');
