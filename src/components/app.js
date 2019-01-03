@@ -4,7 +4,6 @@ import idb from 'idb';
 import { sendBeacon } from '../utils/beacon';
 import Header from './Header';
 
-// Code-splitting is automated for routes
 import Home from '../routes/home';
 import Day from '../routes/day';
 import Settings from '../routes/settings';
@@ -21,7 +20,13 @@ const tables = [
   },
 ];
 
+const isOnboarded = () => !!localStorage.getItem('journalbook_onboarded');
+
 export default class App extends Component {
+  state = {
+    onboarded: isOnboarded(),
+  };
+
   componentDidMount() {
     const key = Number(process.env.PREACT_APP_DB_VERSION);
     idb.open('entries-store', key, upgradeDB => {
@@ -33,12 +38,18 @@ export default class App extends Component {
 
   handleRoute = () => {
     sendBeacon('hit');
+
+    if (this.state.onboarded !== isOnboarded()) {
+      this.setState({
+        onboarded: isOnboarded(),
+      });
+    }
   };
 
-  render() {
+  render({}, { onboarded }) {
     return (
       <div id="app">
-        <Header />
+        <Header onboarded={onboarded} />
         <Router onChange={this.handleRoute}>
           <Home path="/" />
           <GetStarted path="/get-started/" />
