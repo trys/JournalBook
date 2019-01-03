@@ -6,6 +6,7 @@ import Header from './Header';
 
 import Home from '../routes/home';
 import Day from '../routes/day';
+import Year from '../routes/year';
 import Settings from '../routes/settings';
 import GetStarted from '../routes/get-started';
 import NotFound from '../routes/not-found';
@@ -55,6 +56,7 @@ export default class App extends Component {
           <GetStarted path="/get-started/" />
           <Settings path="/settings/" />
           <Day path="/:year/:month/:day" />
+          <Year path="/:year" />
           <NotFound default />
         </Router>
       </div>
