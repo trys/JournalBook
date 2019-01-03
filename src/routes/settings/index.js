@@ -42,6 +42,15 @@ export default class Questions extends Component {
     this.updateQuestion(slug, value, 'status');
   };
 
+  deleteQuestion = slug => {
+    // remove question from store
+    this.state.db.delete('questions', slug);
+
+    // remove question from state
+    const questions = this.state.questions.filter(q => q.slug !== slug);
+    this.setState({ questions });
+  };
+
   addQuestion = event => {
     event.preventDefault();
     const text = event.target.question.value;
@@ -166,6 +175,7 @@ export default class Questions extends Component {
           questions={questions}
           updateQuestion={this.updateQuestion}
           updateQuestionStatus={this.updateQuestionStatus}
+          deleteQuestion={this.deleteQuestion}
         />
 
         <AddQuestion addQuestion={this.addQuestion} />

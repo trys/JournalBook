@@ -450,14 +450,26 @@ textarea {
   transform: translateX(100%) translateX(-2px);
 }
 
-.edit-question {
-  position: relative;
+.edit-question-controls {
+  display: flex;
 }
 
-.edit-question .toggle {
-  position: absolute;
-  right: 0;
-  top: 0;
+.edit-question-controls .toggle {
+  margin-left: auto;
+}
+
+.edit-question-controls a {
+  text-decoration: none;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 1rem;
+  line-height: 0.9rem;
+  font-size: 0.8rem;
+  background: #ccc;
+  font-family: sans-serif;
+  text-align: center;
+  cursor: pointer;
+  margin-left: 0.5rem;
 }
 
 /* Delete Data */
