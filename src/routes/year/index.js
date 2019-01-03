@@ -6,6 +6,7 @@ import {
   compare,
   fudgeDates,
   filledArray,
+  months as monthNames,
 } from '../../utils/date';
 import { DB } from '../../utils/db';
 import Traverse from '../../components/Traverse';
@@ -40,7 +41,7 @@ export default class Year extends Component {
         dates
           .filter(x => x.indexOf(String(year)) === 0)
           .forEach(date => {
-            const { month } = fudgeDates(date);
+            const month = Number(date.substring(4, 6)) - 1;
             months[month]++;
           });
 
@@ -48,7 +49,7 @@ export default class Year extends Component {
       });
   };
 
-  render({ year }) {
+  render({ year }, { months }) {
     const today = new Date();
     const lastYear = new Date(year, 0, 1);
     lastYear.setFullYear(lastYear.getFullYear() - 1);
@@ -66,6 +67,13 @@ export default class Year extends Component {
           nextLink={isThisYear ? '' : `/${nextYear.getFullYear()}`}
           disableNext={isThisYear}
         />
+        <ul>
+          {months.map((count, month) => (
+            <li key={month}>
+              {monthNames[month]} - {count} entries
+            </li>
+          ))}
+        </ul>
       </div>
     );
   }

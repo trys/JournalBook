@@ -49,22 +49,22 @@ export const ordinal = n => {
   }
 };
 
-export const format = date => {
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
+export const months = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
+export const format = date => {
   return `${ordinal(date.getDate())} ${
     months[date.getMonth()]
   } ${date.getFullYear()}`;
