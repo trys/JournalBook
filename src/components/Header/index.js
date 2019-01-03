@@ -4,7 +4,7 @@ import { url } from '../../utils/date';
 
 const today = url(new Date());
 
-const Header = () => (
+const Header = ({ onboarded = false }) => (
   <header class="header">
     <div class="wrap">
       <Link href="/">
@@ -23,22 +23,24 @@ const Header = () => (
           </g>
         </svg>
       </Link>
-      <Link href={today}>
-        <svg
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-        >
-          <title>Write</title>
-          <path
-            d="M20 1h-13.5c-1.9 0-3.5 1.6-3.5 3.5v15c0 1.9 1.6 3.5 3.5 3.5h13.5c0.6 0 1-0.4 1-1v-20c0-0.6-0.4-1-1-1zM6.5 3h12.5v13h-12.5c-0.5 0-1 0.1-1.5 0.4v-11.9c0-0.8 0.7-1.5 1.5-1.5zM6.5 21c-0.8 0-1.5-0.7-1.5-1.5s0.7-1.5 1.5-1.5h12.5v3h-12.5z"
-            fill="currentColor"
-          />
-        </svg>
-      </Link>
-      <Link href="/settings/">
+      {onboarded && (
+        <Link href={today}>
+          <svg
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+          >
+            <title>Write</title>
+            <path
+              d="M20 1h-13.5c-1.9 0-3.5 1.6-3.5 3.5v15c0 1.9 1.6 3.5 3.5 3.5h13.5c0.6 0 1-0.4 1-1v-20c0-0.6-0.4-1-1-1zM6.5 3h12.5v13h-12.5c-0.5 0-1 0.1-1.5 0.4v-11.9c0-0.8 0.7-1.5 1.5-1.5zM6.5 21c-0.8 0-1.5-0.7-1.5-1.5s0.7-1.5 1.5-1.5h12.5v3h-12.5z"
+              fill="currentColor"
+            />
+          </svg>
+        </Link>
+      )}
+      <Link href={onboarded ? '/settings/' : '/get-started/'}>
         <svg
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"

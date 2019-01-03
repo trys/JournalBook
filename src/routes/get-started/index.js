@@ -94,7 +94,7 @@ export default class GetStarted extends Component {
         </div>
 
         {questions && questions.length ? (
-          <div class="center">
+          <div class="center lift--without-delay">
             <br />
             <Link href={today} class="button">
               Start writing!
@@ -114,7 +114,7 @@ export default class GetStarted extends Component {
         />
 
         {questions && questions.length ? (
-          <div class="center">
+          <div class="center lift--without-delay">
             <br />
             <Link href={today} class="button">
               Start writing!
