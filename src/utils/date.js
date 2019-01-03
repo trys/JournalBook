@@ -63,3 +63,35 @@ export const format = date => {
     months[date.getMonth()]
   } ${date.getFullYear()}`;
 };
+
+export const filledArray = (v = 0, count = 12) => new Array(count).fill(v);
+
+/**
+ * I painted myself into a corner with bad dates :(
+ * This little beaut breaks the awful date string apart and puts it back
+ * together again with a bit of string hackery. Sorry to anyone who sees this.
+ *
+ * @param  date   string  201801
+ * @return object { year, month, day }
+ */
+export const fudgeDates = date => {
+  const monthAndDay = date.substring(4);
+  const length = monthAndDay.length;
+  let middle;
+
+  if (length === 4 || length === 2) {
+    middle = length / 2;
+  } else {
+    if (monthAndDay.indexOf('10') === 0 || monthAndDay.indexOf('11') === 0) {
+      middle = 2;
+    } else {
+      middle = 1;
+    }
+  }
+
+  const year = Number(date.substring(0, 4));
+  const month = Number(monthAndDay.substring(0, middle));
+  const day = Number(monthAndDay.substring(middle));
+
+  return { year, month, day };
+};
