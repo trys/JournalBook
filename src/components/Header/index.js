@@ -3,6 +3,7 @@ import { Link } from 'preact-router/match';
 import { url } from '../../utils/date';
 
 const today = url(new Date());
+const onboarded = !!localStorage.getItem('journalbook_onboarded');
 
 const Header = () => (
   <header class="header">
@@ -23,7 +24,7 @@ const Header = () => (
           </g>
         </svg>
       </Link>
-      <Link href={today}>
+      {onboarded && <Link href={today}>
         <svg
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
@@ -37,8 +38,8 @@ const Header = () => (
             fill="currentColor"
           />
         </svg>
-      </Link>
-      <Link href="/settings/">
+      </Link>}
+      <Link href={onboarded ? '/settings/' : '/get-started/'}>
         <svg
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
