@@ -52,21 +52,28 @@ export default class Highlights extends Component {
         <p class="center">
           Take a look back on the year, and reflect on the top moments.
         </p>
-        {keys.map(year => (
-          <div key={year} class="center">
-            <br />
-            <h2>{year}</h2>
-            <ul class="year-overview year-overview--center">
-              {years[year].map(date => (
-                <li key={ymd(date)}>
-                  <Link href={url(date)} class="button">
-                    {months[date.getMonth()]} {date.getDate()}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+        {keys.length ? (
+          keys.map(year => (
+            <div key={year} class="center">
+              <br />
+              <h2>{year}</h2>
+              <ul class="year-overview year-overview--center">
+                {years[year].map(date => (
+                  <li key={ymd(date)}>
+                    <Link href={url(date)} class="button">
+                      {months[date.getMonth()]} {date.getDate()}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        ) : (
+          <p class="center">
+            No highlights just yet? Not to worry, keep your chin up, and keep
+            writing! 😊
+          </p>
+        )}
       </div>
     );
   }
