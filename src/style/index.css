@@ -302,10 +302,6 @@ textarea {
 }
 
 .question {
-  animation: lift 750ms forwards;
-  animation-delay: 300ms;
-  opacity: 0;
-  transform: translateY(40px);
   padding: 20px;
 }
 

@@ -110,7 +110,7 @@ export default class Day extends Component {
     const isToday = ymd(today) === ymd(date);
 
     return (
-      <div class="wrap wrap--padding">
+      <div class="wrap wrap--padding lift-children">
         <Traverse
           title={format(date)}
           lastLink={url(yesterday)}
@@ -120,11 +120,7 @@ export default class Day extends Component {
 
         {questions === null ? null : questions.length ? (
           questions.map(({ slug, text, answer = '' }, index) => (
-            <div
-              key={slug}
-              class="question"
-              style={`animation-delay: ${(index + 1) * 300}ms`}
-            >
+            <div key={slug} class="question">
               <label for={slug}>{text}</label>
               <textarea
                 id={slug}
