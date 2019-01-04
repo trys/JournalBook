@@ -7,6 +7,7 @@ import { DB } from '../utils/db';
 
 import Home from '../routes/home';
 import Day from '../routes/day';
+import Month from '../routes/months';
 import Year from '../routes/year';
 import Settings from '../routes/settings';
 import GetStarted from '../routes/get-started';
@@ -91,6 +92,7 @@ export default class App extends Component {
           <GetStarted path="/get-started/" />
           <Settings path="/settings/" />
           <Day path="/:year/:month/:day" />
+          <Month path="/:year/:month" />
           <Year path="/:year" />
           <NotFound default />
         </Router>

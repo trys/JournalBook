@@ -70,7 +70,10 @@ export const months = [
 export const format = date => {
   return (
     <span>
-      {ordinal(date.getDate())} {months[date.getMonth()]}{' '}
+      {ordinal(date.getDate())}{' '}
+      <Link href={`/${date.getFullYear()}/${pad(date.getMonth() + 1)}`}>
+        {months[date.getMonth()]}
+      </Link>{' '}
       <Link href={`/${date.getFullYear()}`}>{date.getFullYear()}</Link>
     </span>
   );

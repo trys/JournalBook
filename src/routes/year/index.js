@@ -1,14 +1,5 @@
 import { h, Component } from 'preact';
-import {
-  ymd,
-  url,
-  format,
-  compare,
-  fudgeDates,
-  filledArray,
-  months as monthNames,
-  pad,
-} from '../../utils/date';
+import { filledArray, months as monthNames, pad } from '../../utils/date';
 import { DB } from '../../utils/db';
 import Traverse from '../../components/Traverse';
 import { Link } from 'preact-router/match';
