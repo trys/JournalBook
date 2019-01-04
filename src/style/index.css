@@ -519,11 +519,13 @@ textarea {
   top: 50%;
   background: #4451b1;
   color: #fff;
-  border-radius: 100%;
+  border-radius: 25px;
   transform: translateY(-50%);
-  width: 25px;
+  min-width: 25px;
+  padding: 0 4px;
   height: 25px;
   display: flex;
   justify-content: center;
   align-items: center;
+  text-align: center;
 }
