@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import { Link } from 'preact-router/match';
 import { ymd, url, format, compare } from '../../utils/date';
 import { DB } from '../../utils/db';
+import Traverse from '../../components/Traverse';
 
 export default class Day extends Component {
   state = {
@@ -87,29 +88,12 @@ export default class Day extends Component {
 
     return (
       <div class="wrap wrap--padding">
-        <header class="traverse">
-          <Link href={url(yesterday)}>
-            <svg width="8" height="14" xmlns="http://www.w3.org/2000/svg">
-              <title>Yesterday</title>
-              <path
-                d="M2.4 7l5.3-5.3c.4-.4.4-1 0-1.4-.4-.4-1-.4-1.4 0l-6 6c-.4.4-.4 1 0 1.4l6 6c.2.2.5.3.7.3.2 0 .5-.1.7-.3.4-.4.4-1 0-1.4L2.4 7z"
-                fill="#4951A3"
-                fill-rule="nonzero"
-              />
-            </svg>
-          </Link>
-          <h1>{format(date)}</h1>
-          <Link disabled={isToday} href={isToday ? '' : url(tomorrow)}>
-            <svg width="8" height="14" xmlns="http://www.w3.org/2000/svg">
-              <title>Tomorrow</title>
-              <path
-                d="M7.7 6.3l-6-6C1.3-.1.7-.1.3.3c-.4.4-.4 1 0 1.4L5.6 7 .3 12.3c-.4.4-.4 1 0 1.4.2.2.4.3.7.3.3 0 .5-.1.7-.3l6-6c.4-.4.4-1 0-1.4z"
-                fill="#4951A3"
-                fill-rule="nonzero"
-              />
-            </svg>
-          </Link>
-        </header>
+        <Traverse
+          title={format(date)}
+          lastLink={url(yesterday)}
+          nextLink={isToday ? '' : url(tomorrow)}
+          disableNext={isToday}
+        />
 
         {questions === null ? null : questions.length ? (
           questions.map(({ slug, text, answer = '' }, index) => (

@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { Link } from 'preact-router/match';
 import { url } from '../../utils/date';
 
-const today = url(new Date());
+const today = url();
 const onboarded = !!localStorage.getItem('journalbook_onboarded');
 
 const Home = () =>

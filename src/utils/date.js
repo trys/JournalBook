@@ -1,3 +1,5 @@
+import { Link } from 'preact-router/match';
+
 /**
  * Returns  0 if dates are equal
  * Returns  1 if a > b
@@ -23,8 +25,9 @@ export const url = (date = new Date()) =>
     date.getDate()
   )}/`;
 
+export const pad = n => (n < 10 ? '0' : '') + n;
+
 export const ymd = (date = new Date()) => {
-  const pad = n => (n < 10 ? '0' : '') + n;
   const y = date.getFullYear();
   const m = pad(date.getMonth() + 1);
   const d = pad(date.getDate());
@@ -49,26 +52,34 @@ export const ordinal = n => {
   }
 };
 
-export const format = date => {
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
+export const months = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+];
 
-  return `${ordinal(date.getDate())} ${
-    months[date.getMonth()]
-  } ${date.getFullYear()}`;
+export const format = date => {
+  return (
+    <span>
+      {ordinal(date.getDate())}{' '}
+      <Link href={`/${date.getFullYear()}/${pad(date.getMonth() + 1)}`}>
+        {months[date.getMonth()]}
+      </Link>{' '}
+      <Link href={`/${date.getFullYear()}`}>{date.getFullYear()}</Link>
+    </span>
+  );
 };
+
+export const filledArray = (v = 0, count = 12) => new Array(count).fill(v);
 
 /**
  * I painted myself into a corner with bad dates :(
