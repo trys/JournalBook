@@ -57,7 +57,7 @@ export default class Month extends Component {
       today.getMonth() === month && today.getFullYear() === Number(year);
 
     return (
-      <div class="wrap wrap--padding lift-children">
+      <div class="wrap lift-children">
         <Traverse
           title={
             <span>
