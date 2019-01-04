@@ -7,9 +7,11 @@ import {
   fudgeDates,
   filledArray,
   months as monthNames,
+  pad,
 } from '../../utils/date';
 import { DB } from '../../utils/db';
 import Traverse from '../../components/Traverse';
+import { Link } from 'preact-router/match';
 
 export default class Year extends Component {
   state = {
@@ -60,17 +62,25 @@ export default class Year extends Component {
     const isThisYear = today.getFullYear() === Number(year);
 
     return (
-      <div class="wrap wrap--padding">
+      <div class="wrap wrap--padding lift-children">
         <Traverse
           title={year}
           lastLink={`/${lastYear.getFullYear()}`}
           nextLink={isThisYear ? '' : `/${nextYear.getFullYear()}`}
           disableNext={isThisYear}
         />
-        <ul>
+        <ul class="year-overview wrap">
           {months.map((count, month) => (
             <li key={month}>
-              {monthNames[month]} - {count} entries
+              <Link
+                href={`/${year}/${pad(month + 1)}`}
+                class={`button button--${count ? 'active' : 'inactive'}`}
+              >
+                {monthNames[month]}{' '}
+                <strong>
+                  <b>{count}</b>
+                </strong>
+              </Link>
             </li>
           ))}
         </ul>

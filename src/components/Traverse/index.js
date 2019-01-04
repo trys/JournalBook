@@ -9,7 +9,7 @@ const Traverse = ({
 }) => {
   return (
     <header class="traverse">
-      <Link href={lastLink}>
+      <Link class="traverse__arrow" href={lastLink}>
         <svg width="8" height="14" xmlns="http://www.w3.org/2000/svg">
           <title>Previous</title>
           <path
@@ -20,7 +20,7 @@ const Traverse = ({
         </svg>
       </Link>
       <h1>{title}</h1>
-      <Link disabled={disableNext} href={nextLink}>
+      <Link class="traverse__arrow" disabled={disableNext} href={nextLink}>
         <svg width="8" height="14" xmlns="http://www.w3.org/2000/svg">
           <title>Next</title>
           <path

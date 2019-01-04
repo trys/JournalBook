@@ -6,7 +6,7 @@ import { url } from '../../utils/date';
 import { QuestionList } from '../../components/QuestionList';
 import { AddQuestion } from '../../components/AddQuestion';
 
-const today = url(new Date());
+const today = url();
 
 export default class GetStarted extends Component {
   state = {
