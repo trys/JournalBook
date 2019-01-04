@@ -11,6 +11,7 @@ import Month from '../routes/months';
 import Year from '../routes/year';
 import Settings from '../routes/settings';
 import GetStarted from '../routes/get-started';
+import Highlights from '../routes/highlights';
 import NotFound from '../routes/not-found';
 import { fudgeDates, ymd } from '../utils/date';
 
@@ -94,6 +95,7 @@ export default class App extends Component {
           <Home path="/" />
           <GetStarted path="/get-started/" />
           <Settings path="/settings/" />
+          <Highlights path="/highlights" />
           <Day path="/:year/:month/:day" />
           <Month path="/:year/:month" />
           <Year path="/:year" />

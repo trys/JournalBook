@@ -67,6 +67,13 @@ export const months = [
   'Dec',
 ];
 
+export const parse = date => {
+  const year = Number(date.substring(0, 4));
+  const month = Number(date.substring(4, 6)) - 1;
+  const day = Number(date.substring(6, 8));
+  return new Date(year, month, day);
+};
+
 export const format = date => {
   return (
     <span>

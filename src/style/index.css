@@ -515,6 +515,10 @@ textarea {
   position: relative;
 }
 
+.year-overview--center .button {
+  text-align: center;
+}
+
 .year-overview .button--inactive {
   opacity: 0.6;
 }
