@@ -123,7 +123,7 @@ hr {
 }
 
 .button--grey {
-  background: rgb(200, 200, 200);
+  background: rgb(222, 222, 233);
   color: inherit;
 }
 
@@ -141,6 +141,16 @@ hr {
 
 .button--space {
   margin-right: 10px;
+}
+
+.button--reset {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
 }
 
 /* Grid */
@@ -528,4 +538,14 @@ textarea {
   justify-content: center;
   align-items: center;
   text-align: center;
+}
+
+/* Highlight */
+.highlight-today {
+  margin: 20px 20px;
+}
+
+.highlight-today svg {
+  vertical-align: middle;
+  margin: -2px 8px 0 0;
 }
