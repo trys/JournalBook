@@ -22,6 +22,9 @@ const tables = [
   db => {
     db.createObjectStore('entries');
   },
+  db => {
+    db.createObjectStore('highlights');
+  },
 ];
 
 const isOnboarded = () => !!localStorage.getItem('journalbook_onboarded');
