@@ -37,9 +37,9 @@ export default class App extends Component {
   };
 
   componentDidMount() {
-    const key = Number(process.env.PREACT_APP_DB_VERSION);
-    idb.open('entries-store', key, upgradeDB => {
-      for (let index = upgradeDB.oldVersion + 1; index <= key; index++) {
+    const version = tables.length - 1;
+    idb.open('entries-store', version, upgradeDB => {
+      for (let index = upgradeDB.oldVersion + 1; index <= version; index++) {
         tables[index] && tables[index](upgradeDB);
       }
     });
