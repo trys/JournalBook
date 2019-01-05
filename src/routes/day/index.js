@@ -33,36 +33,33 @@ export default class Day extends Component {
     }
 
     const db = new DB();
+    const keys = await db.keys('questions');
+    const questions = await Promise.all(
+      keys.map(x => db.get('questions', x))
+    ).then(results => results.filter(x => x.status === 'live'));
 
-    db.keys('questions').then(keys => {
-      Promise.all(keys.map(x => db.get('questions', x)))
-        .then(results => results.filter(x => x.status === 'live'))
-        .then(questions => {
-          Promise.all(
-            questions.map(({ slug }) => db.get('entries', `${key}_${slug}`))
-          ).then(answers => {
-            questions.forEach((question, index) => {
-              question.answer = answers[index] || '';
-            });
-
-            db.get('highlights', key).then(highlighted => {
-              this.setState(
-                {
-                  date,
-                  db,
-                  questions,
-                  key,
-                  highlighted: !!highlighted,
-                  clicked: false,
-                },
-                () => {
-                  this.setTextareaHeights();
-                }
-              );
-            });
-          });
-        });
+    const answers = await Promise.all(
+      questions.map(({ slug }) => db.get('entries', `${key}_${slug}`))
+    );
+    questions.forEach((question, index) => {
+      question.answer = answers[index] || '';
     });
+
+    const highlighted = await db.get('highlights', key);
+
+    this.setState(
+      {
+        date,
+        db,
+        questions,
+        key,
+        highlighted: !!highlighted,
+        clicked: false,
+      },
+      () => {
+        this.setTextareaHeights();
+      }
+    );
   };
 
   setTextareaHeights() {

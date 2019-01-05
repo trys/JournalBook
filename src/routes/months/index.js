@@ -17,7 +17,7 @@ export default class Month extends Component {
     this.getData(props);
   }
 
-  getData = ({ year, month }) => {
+  getData = async ({ year, month }) => {
     month = Number(month) - 1;
     const date = new Date(year, month, 1);
 
@@ -28,20 +28,18 @@ export default class Month extends Component {
 
     const db = new DB();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const days = filledArray(0, daysInMonth + 1);
+    const dates = await db.keys('entries');
 
-    db.keys('entries')
-      .then(keys => keys.map(x => x.split('_').shift()))
-      .then(dates => {
-        dates
-          .filter(x => x.indexOf(String(year) + pad(month + 1)) === 0)
-          .forEach(date => {
-            const day = Number(date.substring(6, 8));
-            days[day]++;
-          });
+    const days = dates
+      .map(x => x.split('_').shift())
+      .filter(x => x.indexOf(String(year) + pad(month + 1)) === 0)
+      .reduce((current, date) => {
+        const day = Number(date.substring(6, 8));
+        current[day]++;
+        return current;
+      }, filledArray(0, daysInMonth + 1));
 
-        this.setState({ days });
-      });
+    this.setState({ days });
   };
 
   render({ year, month }, { days = [] }) {

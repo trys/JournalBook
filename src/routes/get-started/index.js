@@ -22,12 +22,9 @@ export default class GetStarted extends Component {
 
   async componentDidMount() {
     const db = new DB();
-
-    db.keys('questions').then(keys => {
-      Promise.all(keys.map(x => db.get('questions', x))).then(questions => {
-        this.setState({ db, questions });
-      });
-    });
+    const keys = await db.keys('questions');
+    const questions = await Promise.all(keys.map(x => db.get('questions', x)));
+    this.setState({ db, questions });
   }
 
   updateQuestion = (slug, value, attribute = 'text') => {
@@ -47,17 +44,17 @@ export default class GetStarted extends Component {
     this.updateQuestion(slug, value, 'status');
   };
 
-  addQuestionToDB = (text, callback = () => null) => {
+  addQuestionToDB = async (text, callback = () => null) => {
     const slug = slugify(text);
     const question = { slug, text, status: 'live', createdAt: Date.now() };
 
-    this.state.db.set('questions', slug, question).then(x => {
-      localStorage.setItem('journalbook_onboarded', true);
-      const questions = [...this.state.questions];
-      questions.push(question);
-      this.setState({ questions });
-      callback();
-    });
+    await this.state.db.set('questions', slug, question);
+
+    localStorage.setItem('journalbook_onboarded', true);
+    const questions = [...this.state.questions];
+    questions.push(question);
+    this.setState({ questions });
+    callback();
   };
 
   addDefaultQuestion = event => {

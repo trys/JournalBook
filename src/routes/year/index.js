@@ -17,7 +17,7 @@ export default class Year extends Component {
     this.getData(props);
   }
 
-  getData = ({ year }) => {
+  getData = async ({ year }) => {
     const date = new Date(year, 0, 1);
 
     if (date.toString() === 'Invalid Date') {
@@ -26,20 +26,18 @@ export default class Year extends Component {
     }
 
     const db = new DB();
-    const months = filledArray();
+    const dates = await db.keys('entries');
 
-    db.keys('entries')
-      .then(keys => keys.map(x => x.split('_').shift()))
-      .then(dates => {
-        dates
-          .filter(x => x.indexOf(String(year)) === 0)
-          .forEach(date => {
-            const month = Number(date.substring(4, 6)) - 1;
-            months[month]++;
-          });
+    const months = dates
+      .map(x => x.split('_').shift())
+      .filter(x => x.indexOf(String(year)) === 0)
+      .reduce((current, date) => {
+        const month = Number(date.substring(4, 6)) - 1;
+        current[month]++;
+        return current;
+      }, filledArray());
 
-        this.setState({ months });
-      });
+    this.setState({ months });
   };
 
   render({ year }, { months }) {
