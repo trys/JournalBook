@@ -76,7 +76,7 @@ const Header = ({ onboarded = false }) => (
         </Link>
       )}
       {onboarded && (
-        <Link href={onboarded ? '/settings/' : '/get-started/'}>
+        <Link href="/settings/">
           <svg
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
