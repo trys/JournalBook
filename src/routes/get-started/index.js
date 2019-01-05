@@ -27,6 +27,10 @@ export default class GetStarted extends Component {
     this.setState({ db, questions });
   }
 
+  onboard() {
+    localStorage.setItem('journalbook_onboarded', true);
+  }
+
   updateQuestion = (slug, value, attribute = 'text') => {
     const questions = [...this.state.questions];
     const question = questions.find(x => x.slug === slug);
@@ -50,7 +54,7 @@ export default class GetStarted extends Component {
 
     await this.state.db.set('questions', slug, question);
 
-    localStorage.setItem('journalbook_onboarded', true);
+    this.onboard();
     const questions = [...this.state.questions];
     questions.push(question);
     this.setState({ questions });
@@ -105,7 +109,9 @@ export default class GetStarted extends Component {
         />
 
         <div>
-          <Link href="/settings">Import an existing JournalBook</Link>
+          <a onClick={this.onboard} href="/settings">
+            Import an existing JournalBook
+          </a>
           <br />
           <br />
         </div>
