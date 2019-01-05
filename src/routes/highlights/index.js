@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import { DB } from '../../utils/db';
 import Traverse from '../../components/Traverse';
 import { Link } from 'preact-router/match';
-import { parse, months, ymd, url } from '../../utils/date';
+import { parse, months, ymd, url, sortDates } from '../../utils/date';
 
 export default class Highlights extends Component {
   state = {
@@ -28,15 +28,7 @@ export default class Highlights extends Component {
     }, {});
 
     Object.keys(years).forEach(year => {
-      years[year].sort((a, b) => {
-        if (a < b) {
-          return -1;
-        } else if (a === b) {
-          return 0;
-        } else {
-          return 1;
-        }
-      });
+      years[year].sort(sortDates);
     });
 
     this.setState({ years });
@@ -50,7 +42,7 @@ export default class Highlights extends Component {
       <div class="wrap lift-children">
         <Traverse title="Highlights" />
         <p class="center">
-          Take a look back on the year, and reflect on the top moments.
+          Take a look back on the year, and reflect on your top moments.
         </p>
         {keys.length ? (
           keys.map(year => (

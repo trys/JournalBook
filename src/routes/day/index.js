@@ -75,11 +75,13 @@ export default class Day extends Component {
   highlightDay = () => {
     const highlighted = !this.state.highlighted;
     const { key } = this.state;
+
     if (highlighted) {
       this.state.db.set('highlights', key, true);
     } else {
       this.state.db.delete('highlights', key);
     }
+
     this.setState({ highlighted: highlighted, clicked: highlighted });
   };
 
