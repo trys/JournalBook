@@ -549,3 +549,22 @@ textarea {
   vertical-align: middle;
   margin: -2px 8px 0 0;
 }
+
+.highlight-today .button.clicked {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  33% {
+    transform: rotate(2deg);
+  }
+
+  66% {
+    transform: rotate(-2deg);
+  }
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+}

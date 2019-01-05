@@ -10,6 +10,7 @@ export default class Day extends Component {
     db: null,
     questions: null,
     highlighted: false,
+    clicked: false,
     key: '',
   };
 
@@ -52,6 +53,7 @@ export default class Day extends Component {
                   questions,
                   key,
                   highlighted: !!highlighted,
+                  clicked: false,
                 },
                 () => {
                   this.setTextareaHeights();
@@ -78,7 +80,7 @@ export default class Day extends Component {
     } else {
       this.state.db.delete('highlights', key);
     }
-    this.setState({ highlighted: highlighted });
+    this.setState({ highlighted: highlighted, clicked: highlighted });
   };
 
   updateAnswer = (slug, answer) => {
@@ -95,7 +97,7 @@ export default class Day extends Component {
     this.setState({ questions });
   };
 
-  render(props, { date, questions, highlighted }) {
+  render(props, { date, questions, highlighted, clicked }) {
     if (date === null) {
       return null;
     }
@@ -143,31 +145,33 @@ export default class Day extends Component {
           </div>
         )}
 
-        <button
-          type="button"
-          class={`button highlight-today lift ${
-            highlighted ? 'button--blue' : 'button--grey'
-          }`}
-          onClick={this.highlightDay}
-        >
-          <svg
-            width="1em"
-            height="1em"
-            viewBox="0 0 22 22"
-            xmlns="http://www.w3.org/2000/svg"
+        <div class="highlight-today">
+          <button
+            type="button"
+            class={`button ${highlighted ? 'button--blue' : 'button--grey'}${
+              clicked ? ' clicked' : ''
+            }`}
+            onClick={this.highlightDay}
           >
-            <path
-              stroke="currentColor"
-              stroke-width="2"
-              d="M11 1l3 6.3 7 1-5 4.8 1.2 7-6.2-3.3L4.8 20 6 13.1 1 8.3l7-1z"
-              fill={highlighted ? 'currentColor' : 'none'}
-              fill-rule="evenodd"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-          Highlight today!
-        </button>
+            <svg
+              width="1em"
+              height="1em"
+              viewBox="0 0 22 22"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke="currentColor"
+                stroke-width="2"
+                d="M11 1l3 6.3 7 1-5 4.8 1.2 7-6.2-3.3L4.8 20 6 13.1 1 8.3l7-1z"
+                fill={highlighted ? 'currentColor' : 'none'}
+                fill-rule="evenodd"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Highlight today!
+          </button>
+        </div>
       </div>
     );
   }
