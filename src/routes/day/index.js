@@ -22,7 +22,7 @@ export default class Day extends Component {
     this.getData(props);
   }
 
-  getData = props => {
+  getData = async props => {
     const { day, month, year } = props;
     const date = new Date(year, Number(month) - 1, day);
     const key = ymd(date);
