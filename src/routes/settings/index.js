@@ -75,14 +75,14 @@ export default class Questions extends Component {
         return current;
       }, {});
 
-      return {
-        questions,
-        entries,
-      };
+      const highlights = await this.state.db.keys('highlights');
+
+      return { questions, entries, highlights };
     } catch (e) {
       return {
         questions: {},
         entries: {},
+        highlights: [],
       };
     }
   };
@@ -122,9 +122,11 @@ export default class Questions extends Component {
     const file = event.target.files[0];
     this.setState({ importing: true });
 
-    reader.onload = (() => e => {
-      const { entries, questions } = JSON.parse(e.target.result);
-      if (!entries || !questions) {
+    reader.onload = (() => async e => {
+      const { entries, questions, highlights = [] } = JSON.parse(
+        e.target.result
+      );
+      if (!entries || !questions || !Array.isArray(highlights)) {
         return;
       }
 
@@ -137,14 +139,23 @@ export default class Questions extends Component {
       });
 
       const entryKeys = Object.keys(entries);
-      entryKeys.map(async key => {
-        const current = await this.state.db.get('entries', key);
-        if (!current) {
-          await this.state.db.set('entries', key, entries[key]);
-        }
-      });
+      await Promise.all(
+        entryKeys.map(async key => {
+          const current = await this.state.db.get('entries', key);
+          if (!current) {
+            return this.state.db.set('entries', key, entries[key]);
+          }
+        })
+      );
+
+      await Promise.all(
+        highlights.map(async key => {
+          return this.state.db.set('highlights', key, true);
+        })
+      );
 
       localStorage.setItem('journalbook_onboarded', true);
+      localStorage.setItem('journalbook_dates_migrated', true);
 
       window.location.reload();
     })();

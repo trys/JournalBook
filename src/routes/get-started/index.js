@@ -107,6 +107,12 @@ export default class GetStarted extends Component {
           label="Or write your own!"
         />
 
+        <div>
+          <Link href="/settings">Import an existing JournalBook</Link>
+          <br />
+          <br />
+        </div>
+
         <QuestionList
           questions={questions}
           updateQuestion={this.updateQuestion}

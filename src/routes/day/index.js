@@ -9,6 +9,8 @@ export default class Day extends Component {
     date: null,
     db: null,
     questions: null,
+    highlighted: false,
+    clicked: false,
     key: '',
   };
 
@@ -43,8 +45,20 @@ export default class Day extends Component {
               question.answer = answers[index] || '';
             });
 
-            this.setState({ date, db, questions, key }, () => {
-              this.setTextareaHeights();
+            db.get('highlights', key).then(highlighted => {
+              this.setState(
+                {
+                  date,
+                  db,
+                  questions,
+                  key,
+                  highlighted: !!highlighted,
+                  clicked: false,
+                },
+                () => {
+                  this.setTextareaHeights();
+                }
+              );
             });
           });
         });
@@ -57,6 +71,19 @@ export default class Day extends Component {
       el.style.height = el.scrollHeight + 'px';
     });
   }
+
+  highlightDay = () => {
+    const highlighted = !this.state.highlighted;
+    const { key } = this.state;
+
+    if (highlighted) {
+      this.state.db.set('highlights', key, true);
+    } else {
+      this.state.db.delete('highlights', key);
+    }
+
+    this.setState({ highlighted: highlighted, clicked: highlighted });
+  };
 
   updateAnswer = (slug, answer) => {
     const questions = [...this.state.questions];
@@ -72,7 +99,7 @@ export default class Day extends Component {
     this.setState({ questions });
   };
 
-  render(props, { date, questions }) {
+  render(props, { date, questions, highlighted, clicked }) {
     if (date === null) {
       return null;
     }
@@ -87,7 +114,7 @@ export default class Day extends Component {
     const isToday = ymd(today) === ymd(date);
 
     return (
-      <div class="wrap wrap--padding">
+      <div class="wrap wrap--padding lift-children">
         <Traverse
           title={format(date)}
           lastLink={url(yesterday)}
@@ -97,11 +124,7 @@ export default class Day extends Component {
 
         {questions === null ? null : questions.length ? (
           questions.map(({ slug, text, answer = '' }, index) => (
-            <div
-              key={slug}
-              class="question"
-              style={`animation-delay: ${(index + 1) * 300}ms`}
-            >
+            <div key={slug} class="question">
               <label for={slug}>{text}</label>
               <textarea
                 id={slug}
@@ -123,6 +146,34 @@ export default class Day extends Component {
             </Link>
           </div>
         )}
+
+        <div class="highlight-today">
+          <button
+            type="button"
+            class={`button ${highlighted ? 'button--blue' : 'button--grey'}${
+              clicked ? ' clicked' : ''
+            }`}
+            onClick={this.highlightDay}
+          >
+            <svg
+              width="1em"
+              height="1em"
+              viewBox="0 0 22 22"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                stroke="currentColor"
+                stroke-width="2"
+                d="M11 1l3 6.3 7 1-5 4.8 1.2 7-6.2-3.3L4.8 20 6 13.1 1 8.3l7-1z"
+                fill={highlighted ? 'currentColor' : 'none'}
+                fill-rule="evenodd"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            Highlight today!
+          </button>
+        </div>
       </div>
     );
   }

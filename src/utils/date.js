@@ -67,6 +67,13 @@ export const months = [
   'Dec',
 ];
 
+export const parse = date => {
+  const year = Number(date.substring(0, 4));
+  const month = Number(date.substring(4, 6)) - 1;
+  const day = Number(date.substring(6, 8));
+  return new Date(year, month, day);
+};
+
 export const format = date => {
   return (
     <span>
@@ -109,4 +116,14 @@ export const fudgeDates = date => {
   const day = Number(monthAndDay.substring(middle));
 
   return { year, month, day };
+};
+
+export const sortDates = (a, b) => {
+  if (a < b) {
+    return -1;
+  } else if (a === b) {
+    return 0;
+  } else {
+    return 1;
+  }
 };
