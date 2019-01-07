@@ -13,6 +13,7 @@ export default class Questions extends Component {
     exporting: 0,
     importing: false,
     files: [],
+    theme: localStorage.getItem('journalbook_theme'),
   };
 
   async componentDidMount() {
@@ -21,6 +22,13 @@ export default class Questions extends Component {
     const questions = await Promise.all(keys.map(x => db.get('questions', x)));
     this.setState({ db, questions });
   }
+
+  updateTheme = event => {
+    const theme = event.target.value;
+    localStorage.setItem('journalbook_theme', theme);
+    document.querySelector('#app').dataset.theme = theme;
+    this.setState({ theme });
+  };
 
   updateQuestion = (slug, value, attribute = 'text') => {
     const questions = [...this.state.questions];
@@ -167,7 +175,7 @@ export default class Questions extends Component {
     window.location.href = '/';
   };
 
-  render(props, { questions, exporting, files, importing }) {
+  render(props, { questions, exporting, files, importing, theme = 'default' }) {
     return (
       <div class="wrap lift-children">
         <QuestionList
@@ -219,6 +227,18 @@ export default class Questions extends Component {
           </label>
 
           <ScaryButton onClick={this.deleteData}>Delete your data</ScaryButton>
+        </div>
+
+        <div>
+          <hr />
+          <h2>Theme</h2>
+          <select onChange={this.updateTheme} value={theme}>
+            <option value="default">Default</option>
+            <option value="dark">Dark</option>
+          </select>
+
+          <br />
+          <br />
         </div>
       </div>
     );
