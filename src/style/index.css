@@ -1,3 +1,4 @@
+/* Reset */
 html,
 body {
   height: 100%;
@@ -102,6 +103,26 @@ hr {
   text-align: center;
 }
 
+/* Grid */
+.wrap {
+  max-width: 800px;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+}
+
+.wrap--thin {
+  max-width: 540px;
+}
+
+.wrap--padding {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Buttons */
 .button {
   display: inline-block;
   background: #3840a2;
@@ -151,25 +172,6 @@ hr {
   font: inherit;
   cursor: pointer;
   padding: 0;
-}
-
-/* Grid */
-.wrap {
-  max-width: 800px;
-  padding-left: 20px;
-  padding-right: 20px;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-}
-
-.wrap--thin {
-  max-width: 540px;
-}
-
-.wrap--padding {
-  padding-left: 0;
-  padding-right: 0;
 }
 
 /* Forms */
