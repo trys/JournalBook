@@ -13,7 +13,7 @@ export default class Questions extends Component {
     exporting: 0,
     importing: false,
     files: [],
-    theme: localStorage.getItem('journalbook_theme'),
+    theme: localStorage.getItem('journalbook_theme') || 'default',
   };
 
   async componentDidMount() {
