@@ -1,5 +1,10 @@
 import { h, Component } from 'preact';
-import { filledArray, months as monthNames, pad } from '../../utils/date';
+import {
+  filledArray,
+  months as monthNames,
+  pad,
+  shortDate,
+} from '../../utils/date';
 import { DB } from '../../utils/db';
 import Traverse from '../../components/Traverse';
 import { Link } from 'preact-router/match';
@@ -75,19 +80,23 @@ export default class Month extends Component {
         <ul class="year-overview">
           {days
             .filter((x, i) => !!i)
-            .map((count, day) => (
-              <li key={day}>
-                <Link
-                  href={`/${year}/${pad(month + 1)}/${pad(day + 1)}`}
-                  class={`button button--${count ? 'active' : 'inactive'}`}
-                >
-                  {monthNames[month]} {day + 1}{' '}
-                  <strong>
-                    <b>{count}</b>
-                  </strong>
-                </Link>
-              </li>
-            ))}
+            .map((count, day) => {
+              const date = new Date(year, month, day + 1);
+
+              return (
+                <li key={day}>
+                  <Link
+                    href={`/${year}/${pad(month + 1)}/${pad(day + 1)}`}
+                    class={`button button--${count ? 'active' : 'inactive'}`}
+                  >
+                    {shortDate(date)}
+                    <strong>
+                      <b>{count}</b>
+                    </strong>
+                  </Link>
+                </li>
+              );
+            })}
         </ul>
       </div>
     );

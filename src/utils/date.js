@@ -52,6 +52,16 @@ export const ordinal = n => {
   }
 };
 
+export const days = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+];
+
 export const months = [
   'Jan',
   'Feb',
@@ -77,13 +87,18 @@ export const parse = date => {
 export const format = date => {
   return (
     <span>
-      {ordinal(date.getDate())}{' '}
+      {days[date.getDay()]} {ordinal(date.getDate())}{' '}
       <Link href={`/${date.getFullYear()}/${pad(date.getMonth() + 1)}`}>
         {months[date.getMonth()]}
       </Link>{' '}
       <Link href={`/${date.getFullYear()}`}>{date.getFullYear()}</Link>
     </span>
   );
+};
+
+export const shortDate = date => {
+  const dayName = days[date.getDay()].substring(0, 3);
+  return `${dayName} ${ordinal(date.getDate())} ${months[date.getMonth()]}`;
 };
 
 export const filledArray = (v = 0, count = 12) => new Array(count).fill(v);

@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import { DB } from '../../utils/db';
 import Traverse from '../../components/Traverse';
 import { Link } from 'preact-router/match';
-import { parse, months, ymd, url, sortDates } from '../../utils/date';
+import { parse, ymd, url, sortDates, shortDate } from '../../utils/date';
 
 export default class Highlights extends Component {
   state = {
@@ -10,14 +10,10 @@ export default class Highlights extends Component {
   };
 
   componentDidMount() {
-    this.getData(this.props);
+    this.getData();
   }
 
-  componentWillReceiveProps(props) {
-    this.getData(props);
-  }
-
-  getData = async ({ year, month }) => {
+  getData = async () => {
     const db = new DB();
     const highlights = await db.keys('highlights');
     const years = highlights.reduce((current, date) => {
@@ -50,13 +46,15 @@ export default class Highlights extends Component {
               <br />
               <h2>{year}</h2>
               <ul class="year-overview year-overview--center">
-                {years[year].map(date => (
-                  <li key={ymd(date)}>
-                    <Link href={url(date)} class="button">
-                      {months[date.getMonth()]} {date.getDate()}
-                    </Link>
-                  </li>
-                ))}
+                {years[year].map(date => {
+                  return (
+                    <li key={ymd(date)}>
+                      <Link href={url(date)} class="button">
+                        {shortDate(date)}
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))
