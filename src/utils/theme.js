@@ -1,6 +1,7 @@
 export const getDefaultTheme = () => {
   const theme = localStorage.getItem('journalbook_theme');
-  if (theme) {
+
+  if (theme !== null) {
     return theme;
   }
 

@@ -15,7 +15,7 @@ import Highlights from '../routes/highlights';
 import About from '../routes/about';
 import NotFound from '../routes/not-found';
 import { fudgeDates, ymd } from '../utils/date';
-import { getTheme } from '../utils/theme';
+import { getDefaultTheme } from '../utils/theme';
 
 const tables = [
   () => {},
