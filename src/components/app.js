@@ -35,6 +35,7 @@ const isMigrated = () => !!localStorage.getItem('journalbook_dates_migrated');
 export default class App extends Component {
   state = {
     onboarded: isOnboarded(),
+    theme: localStorage.getItem('journalbook_theme'),
   };
 
   componentDidMount() {
@@ -88,9 +89,9 @@ export default class App extends Component {
     }
   };
 
-  render({}, { onboarded }) {
+  render({}, { onboarded, theme = '' }) {
     return (
-      <div id="app">
+      <div id="app" data-theme={theme}>
         <Header onboarded={onboarded} />
         <Router onChange={this.handleRoute}>
           <Home path="/" />

@@ -128,6 +128,8 @@ export default class GetStarted extends Component {
             <Link href={today} class="button">
               Start writing!
             </Link>
+            <br />
+            <br />
           </div>
         ) : null}
       </div>
