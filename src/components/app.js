@@ -40,6 +40,14 @@ export default class App extends Component {
   };
 
   componentDidMount() {
+    if (localStorage.getItem('journalbook_theme') === null) {
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+        const theme = e.matches ? 'dark' : '';
+        document.querySelector('#app').dataset.theme = theme;
+        this.setState({ theme });
+      });
+    }
+
     const version = tables.length - 1;
     idb.open('entries-store', version, upgradeDB => {
       for (let index = upgradeDB.oldVersion + 1; index <= version; index++) {
