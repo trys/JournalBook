@@ -15,6 +15,7 @@ import Highlights from '../routes/highlights';
 import About from '../routes/about';
 import NotFound from '../routes/not-found';
 import { fudgeDates, ymd } from '../utils/date';
+import { getDefaultTheme } from '../utils/theme';
 
 const tables = [
   () => {},
@@ -35,10 +36,18 @@ const isMigrated = () => !!localStorage.getItem('journalbook_dates_migrated');
 export default class App extends Component {
   state = {
     onboarded: isOnboarded(),
-    theme: localStorage.getItem('journalbook_theme'),
+    theme: getDefaultTheme(),
   };
 
   componentDidMount() {
+    if (localStorage.getItem('journalbook_theme') === null) {
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+        const theme = e.matches ? 'dark' : '';
+        document.querySelector('#app').dataset.theme = theme;
+        this.setState({ theme });
+      });
+    }
+
     const version = tables.length - 1;
     idb.open('entries-store', version, upgradeDB => {
       for (let index = upgradeDB.oldVersion + 1; index <= version; index++) {

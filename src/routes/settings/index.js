@@ -5,6 +5,7 @@ import { slugify } from '../../utils/slugify';
 import { QuestionList } from '../../components/QuestionList';
 import { AddQuestion } from '../../components/AddQuestion';
 import { ScaryButton } from '../../components/ScaryButton';
+import { getDefaultTheme } from '../../utils/theme';
 
 export default class Questions extends Component {
   state = {
@@ -13,7 +14,7 @@ export default class Questions extends Component {
     exporting: 0,
     importing: false,
     files: [],
-    theme: localStorage.getItem('journalbook_theme') || '',
+    theme: getDefaultTheme(),
   };
 
   async componentDidMount() {
