@@ -13,7 +13,7 @@ export default class Questions extends Component {
     exporting: 0,
     importing: false,
     files: [],
-    theme: localStorage.getItem('journalbook_theme') || 'default',
+    theme: localStorage.getItem('journalbook_theme') || '',
   };
 
   async componentDidMount() {
@@ -175,7 +175,7 @@ export default class Questions extends Component {
     window.location.href = '/';
   };
 
-  render(props, { questions, exporting, files, importing, theme = 'default' }) {
+  render(props, { questions, exporting, files, importing, theme = '' }) {
     return (
       <div class="wrap lift-children">
         <QuestionList
@@ -231,9 +231,9 @@ export default class Questions extends Component {
 
         <div>
           <hr />
-          <h2>Theme</h2>
-          <select onChange={this.updateTheme} value={theme}>
-            <option value="default">Default</option>
+          <label for="theme">Theme</label>
+          <select id="theme" onChange={this.updateTheme} value={theme}>
+            <option value="">Default</option>
             <option value="dark">Dark</option>
           </select>
 

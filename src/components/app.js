@@ -89,7 +89,7 @@ export default class App extends Component {
     }
   };
 
-  render({}, { onboarded, theme = 'default' }) {
+  render({}, { onboarded, theme = '' }) {
     return (
       <div id="app" data-theme={theme}>
         <Header onboarded={onboarded} />
