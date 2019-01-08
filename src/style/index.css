@@ -105,7 +105,7 @@ hr {
 }
 
 [disabled] {
-  opacity: 0.4;
+  opacity: 0.2;
   cursor: not-allowed;
 }
 
@@ -371,7 +371,7 @@ textarea {
 
 /* Home */
 .home {
-  min-height: 100%;
+  min-height: calc(100vh - 110px);
   display: flex;
   width: 100%;
   justify-content: center;
@@ -412,7 +412,7 @@ textarea {
 
 .default-question:hover,
 .default-question:focus {
-  box-shadow: 0 5px 15px rgba(105, 119, 136, 0.2);
+  box-shadow: 0 5px 15px var(--defaultQuestionsShadow, rgba(105, 119, 136, 0.2));
 }
 
 .default-question[disabled] {
@@ -610,20 +610,24 @@ textarea {
 
 /* Themes */
 [data-theme='dark'] {
+  --translucentLight: rgba(255, 255, 255, 0.1);
+  --translucentGrey: rgba(105, 119, 136, 0.1);
+
   --bg: rgb(19, 20, 32);
   --color: #eee;
   --heading: #eee;
   --line: #555;
-  --lightButtonBG: rgba(255, 255, 255, 0.1);
-  --inverseQuestion: rgba(255, 255, 255, 0.1);
-  --headerOne: rgba(64, 64, 80, 0.76);
-  --headerTwo: rgba(64, 64, 80, 0.76);
-  --lightBlueButton: rgba(255, 255, 255, 0.1);
+  --lightButtonBG: var(--translucentLight);
+  --inverseQuestion: var(--translucentLight);
+  --headerOne: rgba(54, 54, 70, 0.8);
+  --headerTwo: rgba(54, 54, 70, 0.8);
+  --lightBlueButton: var(--translucentLight);
   --traverse: #fff;
-  --boxShadow: rgba(105, 119, 136, 0.1);
+  --boxShadow: var(--translucentGrey);
   --overviewCount: #222;
-  --defaultQuestions: rgba(255, 255, 255, 0.1);
-  --buttonBG: #2a307d;
+  --defaultQuestions: var(--translucentLight);
+  --defaultQuestionsShadow: var(--translucentGrey);
+  --buttonBG: #3c2a7d;
   --buttonColor: #fff;
 }
 
