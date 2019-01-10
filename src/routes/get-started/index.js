@@ -5,6 +5,7 @@ import { Link } from 'preact-router/match';
 import { url } from '../../utils/date';
 import { QuestionList } from '../../components/QuestionList';
 import { AddQuestion } from '../../components/AddQuestion';
+import { DBError } from '../../components/DBError';
 
 const today = url();
 
@@ -18,13 +19,20 @@ export default class GetStarted extends Component {
       'What would you change about today?',
       'Notes and musings',
     ],
+    dbError: false,
   };
 
   async componentDidMount() {
-    const db = new DB();
-    const keys = await db.keys('questions');
-    const questions = await Promise.all(keys.map(x => db.get('questions', x)));
-    this.setState({ db, questions });
+    try {
+      const db = await new DB();
+      const keys = await db.keys('questions');
+      const questions = await Promise.all(
+        keys.map(x => db.get('questions', x))
+      );
+      this.setState({ db, questions });
+    } catch (e) {
+      this.setState({ dbError: true });
+    }
   }
 
   onboard() {
@@ -72,7 +80,7 @@ export default class GetStarted extends Component {
     });
   };
 
-  render(props, { questions, defaultQuestions }) {
+  render(props, { questions, defaultQuestions, dbError }) {
     return (
       <div class="wrap lift-children">
         <img src="/assets/images/welcome.svg" class="home-image" alt="" />
@@ -132,6 +140,10 @@ export default class GetStarted extends Component {
             <br />
           </div>
         ) : null}
+
+        {dbError && (
+          <DBError toggle={() => this.setState({ dbError: false })} />
+        )}
       </div>
     );
   }
