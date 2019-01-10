@@ -20,7 +20,7 @@ export const sendBeacon = type => {
     process.env.PREACT_APP_TRACKING,
     JSON.stringify({
       type,
-      url: window.location.pathname,
+      url: window.location.pathname + (window.location.search || ''),
     })
   );
 };
