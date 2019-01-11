@@ -608,6 +608,44 @@ textarea {
   }
 }
 
+/* DB error */
+.db-error {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  animation-delay: 0ms;
+  z-index: 100;
+}
+
+.db-error__content {
+  position: absolute;
+  padding: 40px 20px 20px;
+  background: var(--bg);
+  color: var(--color);
+  max-width: 500px;
+  width: calc(100% - 40px);
+  transform: translate3d(-50%, -50%, 0);
+  text-align: center;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+}
+
+.db-error__dismiss {
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: none;
+  outline: none;
+  position: absolute;
+  border: none;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+}
+
+
 /* Themes */
 [data-theme='dark'] {
   --translucentLight: rgba(255, 255, 255, 0.1);
@@ -634,3 +672,4 @@ textarea {
 [data-theme='dark'] select {
   background-image: url('data:image/svg+xml;charset=utf-8;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iOCIgdmlld0JveD0iMCAwIDEyIDgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTS42NjggMS41MWw0Ljk3NCA0Ljk3NSA0Ljk0OC00Ljk1IiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC40KSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L3N2Zz4=');
 }
+
