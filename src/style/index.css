@@ -232,6 +232,11 @@ select {
   appearance: none;
 }
 
+option {
+  background: #eee;
+  color:#000;
+}
+
 [type='text'] {
   padding: 1em;
   background: rgba(150, 150, 150, 0.1);
