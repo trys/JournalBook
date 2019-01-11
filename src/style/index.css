@@ -232,7 +232,7 @@ select {
   appearance: none;
 }
 
-select#theme option
+option {
 {
   background: #eee;
   color:#000;
