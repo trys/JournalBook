@@ -7,7 +7,8 @@ const NotFound = () => (
     <h1>About JournalBook</h1>
     <img src="/assets/images/study.svg" class="home-image" alt="" />
     <div>
-      <p>JournalBook is a private, offline-first personal journal.</p>
+      <p>JournalBook is a private, offline-first personal journal with right
+        to left support.</p>
       <p>
         A journal is a personal thing, so JournalBook strives to be the most
         private online journal out there.

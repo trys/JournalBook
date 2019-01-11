@@ -25,7 +25,8 @@ const Home = () =>
       <div>
         <br />
         <h2>What's JournalBook?</h2>
-        <p>JournalBook is a private, offline-first personal journal.</p>
+        <p>JournalBook is a private, offline-first personal journal with right
+          to left support.</p>
         <p>
           Your notes are <strong>only</strong> stored on your device, they're
           never even sent to a server. You don't even need to sign-in to use it!

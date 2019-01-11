@@ -1,6 +1,6 @@
 # [JournalBook](https://journalbook.co.uk)
 
-Built with [Preact](http://preactjs.com) and [IDB](https://npmjs.com/package/idb)
+Built with [Preact](http://preactjs.com) and [IDB](https://npmjs.com/package/idb) with right to left support.
 
 ## Before running for the first time
 
