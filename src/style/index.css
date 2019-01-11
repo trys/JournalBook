@@ -232,8 +232,7 @@ select {
   appearance: none;
 }
 
-option
-{
+option {
   background: #eee;
   color:#000;
 }
