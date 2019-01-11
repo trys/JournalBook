@@ -10,6 +10,7 @@ const QuestionList = ({ questions, updateQuestion, updateQuestionStatus }) =>
           <label>Q{index + 1}</label>
           <input
             type="text"
+            dir="auto"
             value={question.text}
             onInput={event => updateQuestion(question.slug, event.target.value)}
           />

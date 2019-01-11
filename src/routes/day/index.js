@@ -122,9 +122,10 @@ export default class Day extends Component {
         {questions === null ? null : questions.length ? (
           questions.map(({ slug, text, answer = '' }, index) => (
             <div key={slug} class="question">
-              <label for={slug}>{text}</label>
+              <label for={slug} dir="auto">{text}</label>
               <textarea
                 id={slug}
+                dir="auto"
                 value={answer}
                 onInput={event => {
                   event.target.style.height = 'auto';

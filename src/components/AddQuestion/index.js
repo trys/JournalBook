@@ -7,6 +7,7 @@ const AddQuestion = ({ addQuestion, label = 'Write your own questions' }) => (
       <input
         id="add-question"
         type="text"
+        dir="auto"
         name="question"
         required
         placeholder="e.g. What are you grateful for?"
