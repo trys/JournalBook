@@ -7,8 +7,7 @@ const NotFound = () => (
     <h1>About JournalBook</h1>
     <img src="/assets/images/study.svg" class="home-image" alt="" />
     <div>
-      <p>JournalBook is a private, offline-first personal journal with right
-        to left support.</p>
+      <p>JournalBook is a private, offline-first personal journal.</p>
       <p>
         A journal is a personal thing, so JournalBook strives to be the most
         private online journal out there.
@@ -27,7 +26,7 @@ const NotFound = () => (
         to do that from time to time!.
       </p>
       <p>
-        It's quick, lightweight, and developed{' '}
+        It's quick, has right to left support, and is developed{' '}
         <a href="https://github.com/trys/JournalBook">in the open</a>. You can
         even add it to your homescreen as an app.
       </p>

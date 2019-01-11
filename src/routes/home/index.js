@@ -25,8 +25,7 @@ const Home = () =>
       <div>
         <br />
         <h2>What's JournalBook?</h2>
-        <p>JournalBook is a private, offline-first personal journal with right
-          to left support.</p>
+        <p>JournalBook is a private, offline-first personal journal.</p>
         <p>
           Your notes are <strong>only</strong> stored on your device, they're
           never even sent to a server. You don't even need to sign-in to use it!
@@ -34,7 +33,7 @@ const Home = () =>
           journey home.
         </p>
         <p>
-          It's quick, lightweight, and developed{' '}
+          It's quick, has right to left support, and is developed{' '}
           <a href="https://github.com/trys/JournalBook">in the open</a>. You can
           even add it to your homescreen as an app.
         </p>
