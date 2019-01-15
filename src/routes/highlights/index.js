@@ -36,14 +36,13 @@ export default class Highlights extends Component {
 
     return (
       <div class="wrap lift-children">
-        <Traverse title="Highlights" />
-        <p class="center">
+        <Traverse title="Highlights" className="traverse--center" />
+        <p class="center mt20">
           Take a look back on the year, and reflect on your top moments.
         </p>
         {keys.length ? (
           keys.map(year => (
-            <div key={year} class="center">
-              <br />
+            <div key={year} class="center mt20">
               <h2>{year}</h2>
               <ul class="year-overview year-overview--center">
                 {years[year].map(date => {
