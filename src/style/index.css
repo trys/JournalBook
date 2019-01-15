@@ -11,6 +11,7 @@
   --headerOne: #3840a2;
   --headerTwo: #5a88c2;
   --traverse: #4951a3;
+  --traverseBG: rgba(50, 50, 50, 0.05);
   --overviewCount: #4451b1;
   --boxShadow: rgba(105, 119, 136, 0.5);
   --defaultQuestions: rgb(205, 219, 236);
@@ -140,9 +141,21 @@ hr {
   max-width: 540px;
 }
 
-.wrap--padding {
-  padding-left: 0;
-  padding-right: 0;
+/* Helpers */
+.mt20 {
+  margin-top: 20px;
+}
+
+.mt40 {
+  margin-top: 40px;
+}
+
+.mb20 {
+  margin-bottom: 20px;
+}
+
+.mb40 {
+  margin-bottom: 40px;
 }
 
 /* Buttons */
@@ -153,7 +166,6 @@ hr {
   font-weight: 700;
   text-transform: uppercase;
   border: none;
-  letter-spacing: 0.1em;
   padding: 15px 25px;
   line-height: 1;
   border-radius: 4px;
@@ -202,7 +214,6 @@ label {
   font-size: 0.8em;
   text-transform: uppercase;
   font-weight: 700;
-  letter-spacing: 0.1em;
   margin: 0 0 0.5em;
   display: block;
 }
@@ -319,12 +330,26 @@ textarea {
 /* Day */
 .traverse {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  width: 100%;
-  margin-bottom: 20px;
+  width: calc(100% + 40px);
+  margin: -40px -20px 10px;
+  padding: 40px 20px 20px;
   animation: lift 750ms forwards;
+  background: var(--traverseBG);
   color: var(--traverse);
+}
+
+.traverse--center {
+  justify-content: center;
+}
+
+.traverse h1 {
+  margin-right: auto;
+}
+
+.traverse--center h1 {
+  margin-right: 0;
 }
 
 .traverse a {
@@ -335,16 +360,24 @@ textarea {
   opacity: 0.7;
 }
 
+.traverse button,
 .traverse__arrow {
-  padding: 0 20px;
+  padding: 0 10px;
+}
+
+.traverse__arrow:last-child {
+  padding-right: 0;
+}
+
+@media screen and (min-width: 800px) {
+  .traverse {
+    background: transparent;
+    border-bottom: 1px solid var(--traverseBG);
+  }
 }
 
 .question {
-  padding: 20px;
-}
-
-.question:nth-child(even) {
-  background: var(--inverseQuestion, rgba(50, 50, 50, 0.05));
+  padding: 20px 0;
 }
 
 /* Settings */
@@ -618,7 +651,7 @@ textarea {
   --heading: #eee;
   --line: #555;
   --lightButtonBG: var(--translucentLight);
-  --inverseQuestion: var(--translucentLight);
+  --traverseBG: var(--translucentLight);
   --headerOne: rgba(54, 54, 70, 0.8);
   --headerTwo: rgba(54, 54, 70, 0.8);
   --lightBlueButton: var(--translucentLight);

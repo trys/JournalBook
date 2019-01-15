@@ -230,16 +230,13 @@ export default class Questions extends Component {
           <ScaryButton onClick={this.deleteData}>Delete your data</ScaryButton>
         </div>
 
-        <div>
+        <div className="mb40">
           <hr />
           <label for="theme">Theme</label>
           <select id="theme" onChange={this.updateTheme} value={theme}>
             <option value="">Default</option>
             <option value="dark">Dark</option>
           </select>
-
-          <br />
-          <br />
         </div>
       </div>
     );

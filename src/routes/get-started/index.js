@@ -95,8 +95,7 @@ export default class GetStarted extends Component {
         </div>
 
         {questions && questions.length ? (
-          <div class="center lift--without-delay">
-            <br />
+          <div class="center lift--without-delay mt20">
             <Link href={today} class="button">
               Start writing!
             </Link>
@@ -108,12 +107,10 @@ export default class GetStarted extends Component {
           label="Or write your own!"
         />
 
-        <div>
+        <div className="mb40">
           <a onClick={this.onboard} href="/settings">
             Import an existing JournalBook
           </a>
-          <br />
-          <br />
         </div>
 
         <QuestionList
@@ -123,13 +120,10 @@ export default class GetStarted extends Component {
         />
 
         {questions && questions.length ? (
-          <div class="center lift--without-delay">
-            <br />
+          <div class="center lift--without-delay mt20 mb40">
             <Link href={today} class="button">
               Start writing!
             </Link>
-            <br />
-            <br />
           </div>
         ) : null}
       </div>

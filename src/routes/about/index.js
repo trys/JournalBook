@@ -35,12 +35,11 @@ const NotFound = () => (
         <a href="https://twitter.com/trysmudford/">tweet me</a> or raise an{' '}
         <a href="https://github.com/trys/JournalBook/">issue on GitHub</a>.
       </p>
-      <p>
+      <p className="mb20">
         <small>
           Created by <a href="https://trysmudford.com">Trys</a>
         </small>
       </p>
-      <br />
     </div>
   </div>
 );

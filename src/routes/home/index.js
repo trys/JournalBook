@@ -22,8 +22,7 @@ const Home = () =>
         <img src="/assets/images/study.svg" class="home-image" alt="" />
         <span class="button">Get started</span>
       </Link>
-      <div>
-        <br />
+      <div className="mt20 mb20">
         <h2>What's JournalBook?</h2>
         <p>JournalBook is a private, offline-first personal journal.</p>
         <p>
@@ -38,7 +37,6 @@ const Home = () =>
           even add it to your homescreen as an app.
         </p>
       </div>
-      <br />
       <p>
         <small>
           Created by <a href="https://trysmudford.com">Trys</a>

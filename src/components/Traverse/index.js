@@ -6,9 +6,13 @@ const Traverse = ({
   lastLink = '',
   nextLink = '',
   disableNext = false,
+  actions = null,
+  className = ''
 }) => {
   return (
-    <header class="traverse">
+    <header class={`traverse ${className}`}>
+      <h1>{title}</h1>
+      {actions}
       {lastLink ? (
         <Link class="traverse__arrow" href={lastLink}>
           <svg width="8" height="14" xmlns="http://www.w3.org/2000/svg">
@@ -21,9 +25,8 @@ const Traverse = ({
           </svg>
         </Link>
       ) : (
-        <span />
+        null
       )}
-      <h1>{title}</h1>
       {lastLink ? (
         <Link class="traverse__arrow" disabled={disableNext} href={nextLink}>
           <svg width="8" height="14" xmlns="http://www.w3.org/2000/svg">
@@ -36,7 +39,7 @@ const Traverse = ({
           </svg>
         </Link>
       ) : (
-        <span />
+        null
       )}
     </header>
   );
