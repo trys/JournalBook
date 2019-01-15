@@ -17,6 +17,8 @@ import NotFound from '../routes/not-found';
 import { fudgeDates, ymd } from '../utils/date';
 import { getDefaultTheme } from '../utils/theme';
 
+const userTheme = localStorage.getItem('journalbook_theme');
+
 const tables = [
   () => {},
   db => {
@@ -27,6 +29,13 @@ const tables = [
   },
   db => {
     db.createObjectStore('highlights');
+  },
+  db => {
+    db.createObjectStore('settings');
+    if (userTheme !== null) {
+      const database = new DB();
+      database.set('settings', 'theme', userTheme);
+    }
   },
 ];
 
@@ -40,7 +49,7 @@ export default class App extends Component {
   };
 
   componentDidMount() {
-    if (localStorage.getItem('journalbook_theme') === null) {
+    if (userTheme === null) {
       window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
         const theme = e.matches ? 'dark' : '';
         document.querySelector('#app').dataset.theme = theme;
