@@ -16,6 +16,8 @@ import About from '../routes/about';
 import NotFound from '../routes/not-found';
 import { fudgeDates, ymd } from '../utils/date';
 import { getDefaultTheme } from '../utils/theme';
+import { connect } from 'unistore/preact';
+import { actions } from '../store/actions';
 
 const userTheme = localStorage.getItem('journalbook_theme');
 
@@ -42,13 +44,12 @@ const tables = [
 const isOnboarded = () => !!localStorage.getItem('journalbook_onboarded');
 const isMigrated = () => !!localStorage.getItem('journalbook_dates_migrated');
 
-export default class App extends Component {
+class App extends Component {
   state = {
     onboarded: isOnboarded(),
-    theme: getDefaultTheme(),
   };
 
-  componentDidMount() {
+  async componentDidMount() {
     if (userTheme === null) {
       window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
         const theme = e.matches ? 'dark' : '';
@@ -95,6 +96,8 @@ export default class App extends Component {
         });
       });
     }
+
+    await this.props.getSettings();
   }
 
   handleRoute = () => {
@@ -107,7 +110,9 @@ export default class App extends Component {
     }
   };
 
-  render({}, { onboarded, theme = '' }) {
+  render({ settings = {} }, { onboarded }) {
+    const theme = settings.theme || getDefaultTheme(settings);
+
     return (
       <div id="app" data-theme={theme}>
         <Header onboarded={onboarded} />
@@ -126,3 +131,8 @@ export default class App extends Component {
     );
   }
 }
+
+export default connect(
+  'settings',
+  actions
+)(App);

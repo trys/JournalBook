@@ -6,15 +6,16 @@ import { QuestionList } from '../../components/QuestionList';
 import { AddQuestion } from '../../components/AddQuestion';
 import { ScaryButton } from '../../components/ScaryButton';
 import { getDefaultTheme } from '../../utils/theme';
+import { actions } from '../../store/actions';
+import { connect } from 'unistore/preact';
 
-export default class Questions extends Component {
+class Settings extends Component {
   state = {
     db: null,
     questions: [],
     exporting: 0,
     importing: false,
     files: [],
-    theme: getDefaultTheme(),
   };
 
   async componentDidMount() {
@@ -26,9 +27,10 @@ export default class Questions extends Component {
 
   updateTheme = event => {
     const theme = event.target.value;
-    localStorage.setItem('journalbook_theme', theme);
-    document.querySelector('#app').dataset.theme = theme;
-    this.setState({ theme });
+    this.props.updateSetting({ key: 'theme', value: event.target.value });
+    // localStorage.setItem('journalbook_theme', theme);
+    // document.querySelector('#app').dataset.theme = theme;
+    // this.setState({ theme });
   };
 
   updateQuestion = (slug, value, attribute = 'text') => {
@@ -176,7 +178,9 @@ export default class Questions extends Component {
     window.location.href = '/';
   };
 
-  render(props, { questions, exporting, files, importing, theme = '' }) {
+  render({ settings = {} }, { questions, exporting, files, importing }) {
+    const theme = settings.theme || getDefaultTheme(settings);
+
     return (
       <div class="wrap lift-children">
         <QuestionList
@@ -242,3 +246,8 @@ export default class Questions extends Component {
     );
   }
 }
+
+export default connect(
+  'settings',
+  actions
+)(Settings);

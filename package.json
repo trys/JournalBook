@@ -35,6 +35,7 @@
     "preact": "^8.2.6",
     "preact-compat": "^3.17.0",
     "preact-router": "^2.5.7",
+    "unistore": "^3.2.1",
     "uuid": "^3.3.2"
   }
 }
