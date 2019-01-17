@@ -191,7 +191,7 @@ class Settings extends Component {
     await this.props.db.clear('entries');
     await this.props.db.clear('questions');
     await this.props.db.clear('highlights');
-    await this.props.db.clear('settings');
+    await this.props.db.clear('highlights');
     localStorage.removeItem('journalbook_onboarded');
     window.location.href = '/';
   };
@@ -257,6 +257,7 @@ class Settings extends Component {
           <label for="theme">Theme</label>
           <select id="theme" onChange={this.updateTheme} value={theme}>
             <option value="">Default</option>
+            <option value="light">Light</option>
             <option value="dark">Dark</option>
           </select>
         </div>

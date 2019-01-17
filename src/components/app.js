@@ -18,7 +18,6 @@ import { connect } from 'unistore/preact';
 import { actions } from '../store/actions';
 import { DBError } from './DBError';
 
-const userTheme = localStorage.getItem('journalbook_theme');
 const isOnboarded = () => !!localStorage.getItem('journalbook_onboarded');
 
 class App extends Component {
@@ -29,14 +28,6 @@ class App extends Component {
 
   async componentDidMount() {
     try {
-      if (userTheme === null) {
-        window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
-          const theme = e.matches ? 'dark' : '';
-          document.querySelector('#app').dataset.theme = theme;
-          this.setState({ theme });
-        });
-      }
-
       const version = 4;
       const dbPromise = openDb('entries-store', version, udb => {
         switch (udb.oldVersion) {
@@ -48,13 +39,21 @@ class App extends Component {
             udb.createObjectStore('highlights');
           case 3:
             udb.createObjectStore('settings', {
-              theme: userTheme || '',
+              theme: localStorage.getItem('journalbook_theme') || '',
             });
         }
       });
 
       await dbPromise;
       await this.props.boot(dbPromise);
+
+      if (this.props.settings && this.props.settings.theme === '') {
+        window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+          const theme = e.matches ? 'dark' : '';
+          document.querySelector('#app').dataset.theme = theme;
+          this.setState({ theme });
+        });
+      }
     } catch (e) {
       this.setState({ dbError: true });
     }
