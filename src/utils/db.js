@@ -1,10 +1,10 @@
-import idb from 'idb';
+import { openDb } from 'idb';
 
 export class DB {
   db;
 
-  constructor(db) {
-    this.db = idb.open('entries-store');
+  constructor(dbPromise) {
+    this.db = dbPromise || openDb('entries-store');
   }
 
   get(table, key) {

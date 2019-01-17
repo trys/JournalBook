@@ -1,30 +1,26 @@
 import { DB } from '../utils/db';
-const db = new DB();
 
 export const actions = store => ({
-  updateSetting: (state, { key = '', value = '' }) => {
-    const settings = { ...state.settings };
-    settings[key] = value;
+  boot: async (state, dbPromise) => {
+    const db = new DB(dbPromise);
 
-    db.set('settings', key, value);
-
-    return {
-      settings,
-    };
-  },
-
-  getSettings: async state => {
     const settingKeys = await db.keys('settings');
     const savedSettings = await settingKeys.reduce(async (current, key) => {
       current[key] = await db.get('settings', key);
       return current;
     }, {});
 
-    return {
-      settings: {
-        ...state.settings,
-        ...savedSettings,
-      },
-    };
+    return { db, settings: { ...state.settings, ...savedSettings } };
+  },
+
+  updateSetting: (state, { key = '', value = '' }) => {
+    if (!state.db) return;
+
+    const settings = { ...state.settings };
+    settings[key] = value;
+
+    state.db.set('settings', key, value);
+
+    return { settings };
   },
 });

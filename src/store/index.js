@@ -4,6 +4,7 @@ const store = {
   settings: {
     theme: '',
   },
+  db: null,
 };
 
 export default createStore(store);
