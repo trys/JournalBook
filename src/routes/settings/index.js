@@ -1,34 +1,31 @@
 import { h, Component } from 'preact';
-import { DB } from '../../utils/db';
 import { ymd } from '../../utils/date';
 import { slugify } from '../../utils/slugify';
 import { QuestionList } from '../../components/QuestionList';
 import { AddQuestion } from '../../components/AddQuestion';
 import { ScaryButton } from '../../components/ScaryButton';
 import { getDefaultTheme } from '../../utils/theme';
+import { actions } from '../../store/actions';
+import { connect } from 'unistore/preact';
 
-export default class Questions extends Component {
+class Settings extends Component {
   state = {
-    db: null,
     questions: [],
     exporting: 0,
     importing: false,
     files: [],
-    theme: getDefaultTheme(),
   };
 
   async componentDidMount() {
-    const db = new DB();
-    const keys = await db.keys('questions');
-    const questions = await Promise.all(keys.map(x => db.get('questions', x)));
-    this.setState({ db, questions });
+    const keys = await this.props.db.keys('questions');
+    const questions = await Promise.all(
+      keys.map(x => this.props.db.get('questions', x))
+    );
+    this.setState({ questions });
   }
 
   updateTheme = event => {
-    const theme = event.target.value;
-    localStorage.setItem('journalbook_theme', theme);
-    document.querySelector('#app').dataset.theme = theme;
-    this.setState({ theme });
+    this.props.updateSetting({ key: 'theme', value: event.target.value });
   };
 
   updateQuestion = (slug, value, attribute = 'text') => {
@@ -39,7 +36,7 @@ export default class Questions extends Component {
     }
 
     question[attribute] = value;
-    this.state.db.set('questions', slug, question);
+    this.props.db.set('questions', slug, question);
 
     this.setState({ questions });
   };
@@ -54,7 +51,7 @@ export default class Questions extends Component {
     const slug = slugify(text);
     const question = { slug, text, status: 'live', createdAt: Date.now() };
 
-    await this.state.db.set('questions', slug, question);
+    await this.props.db.set('questions', slug, question);
 
     localStorage.setItem('journalbook_onboarded', true);
     const questions = [...this.state.questions];
@@ -65,15 +62,15 @@ export default class Questions extends Component {
 
   getData = async () => {
     try {
-      const questionValues = await this.state.db.getAll('questions');
+      const questionValues = await this.props.db.getAll('questions');
       const questions = questionValues.reduce((current, value, index) => {
         current[value.slug] = value;
         return current;
       }, {});
 
-      const entryKeys = await this.state.db.keys('entries');
+      const entryKeys = await this.props.db.keys('entries');
       const entryValues = await Promise.all(
-        entryKeys.map(key => this.state.db.get('entries', key))
+        entryKeys.map(key => this.props.db.get('entries', key))
       );
 
       const entries = entryValues.reduce((current, entry, index) => {
@@ -81,14 +78,25 @@ export default class Questions extends Component {
         return current;
       }, {});
 
-      const highlights = await this.state.db.keys('highlights');
+      const highlights = await this.props.db.keys('highlights');
 
-      return { questions, entries, highlights };
+      const settingKeys = await this.props.db.keys('settings');
+      const settingValues = await Promise.all(
+        settingKeys.map(key => this.props.db.get('settings', key))
+      );
+
+      const settings = settingValues.reduce((current, setting, index) => {
+        current[settingKeys[index]] = setting;
+        return current;
+      }, {});
+
+      return { questions, entries, highlights, settings };
     } catch (e) {
       return {
         questions: {},
         entries: {},
         highlights: [],
+        settings: {},
       };
     }
   };
@@ -129,7 +137,7 @@ export default class Questions extends Component {
     this.setState({ importing: true });
 
     reader.onload = (() => async e => {
-      const { entries, questions, highlights = [] } = JSON.parse(
+      const { entries, questions, highlights = [], settings = {} } = JSON.parse(
         e.target.result
       );
       if (!entries || !questions || !Array.isArray(highlights)) {
@@ -138,25 +146,35 @@ export default class Questions extends Component {
 
       const questionKeys = Object.keys(questions);
       questionKeys.map(async key => {
-        const current = await this.state.db.get('questions', key);
+        const current = await this.props.db.get('questions', key);
         if (!current) {
-          await this.state.db.set('questions', key, questions[key]);
+          await this.props.db.set('questions', key, questions[key]);
         }
       });
 
       const entryKeys = Object.keys(entries);
       await Promise.all(
         entryKeys.map(async key => {
-          const current = await this.state.db.get('entries', key);
+          const current = await this.props.db.get('entries', key);
           if (!current) {
-            return this.state.db.set('entries', key, entries[key]);
+            return this.props.db.set('entries', key, entries[key]);
+          }
+        })
+      );
+
+      const settingKeys = Object.keys(settings);
+      await Promise.all(
+        settingKeys.map(async key => {
+          const current = await this.props.db.get('settings', key);
+          if (!current) {
+            return this.props.db.set('settings', key, settings[key]);
           }
         })
       );
 
       await Promise.all(
         highlights.map(async key => {
-          return this.state.db.set('highlights', key, true);
+          return this.props.db.set('highlights', key, true);
         })
       );
 
@@ -170,13 +188,17 @@ export default class Questions extends Component {
   };
 
   deleteData = async () => {
-    await this.state.db.clear('entries');
-    await this.state.db.clear('questions');
+    await this.props.db.clear('entries');
+    await this.props.db.clear('questions');
+    await this.props.db.clear('highlights');
+    await this.props.db.clear('highlights');
     localStorage.removeItem('journalbook_onboarded');
     window.location.href = '/';
   };
 
-  render(props, { questions, exporting, files, importing, theme = '' }) {
+  render({ settings = {} }, { questions, exporting, files, importing }) {
+    const theme = settings.theme || getDefaultTheme(settings);
+
     return (
       <div class="wrap lift-children">
         <QuestionList
@@ -235,6 +257,7 @@ export default class Questions extends Component {
           <label for="theme">Theme</label>
           <select id="theme" onChange={this.updateTheme} value={theme}>
             <option value="">Default</option>
+            <option value="light">Light</option>
             <option value="dark">Dark</option>
           </select>
         </div>
@@ -242,3 +265,8 @@ export default class Questions extends Component {
     );
   }
 }
+
+export default connect(
+  'settings, db',
+  actions
+)(Settings);

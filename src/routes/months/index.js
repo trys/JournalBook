@@ -5,11 +5,11 @@ import {
   pad,
   shortDate,
 } from '../../utils/date';
-import { DB } from '../../utils/db';
 import Traverse from '../../components/Traverse';
 import { Link } from 'preact-router/match';
+import { connect } from 'unistore/preact';
 
-export default class Month extends Component {
+class Month extends Component {
   state = {
     months: filledArray(),
   };
@@ -31,9 +31,8 @@ export default class Month extends Component {
       return;
     }
 
-    const db = new DB();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const dates = await db.keys('entries');
+    const dates = await this.props.db.keys('entries');
 
     const days = dates
       .map(x => x.split('_').shift())
@@ -102,3 +101,5 @@ export default class Month extends Component {
     );
   }
 }
+
+export default connect('db')(Month);
