@@ -1,5 +1,4 @@
 import { h, Component } from 'preact';
-import { DB } from '../../utils/db';
 import { ymd } from '../../utils/date';
 import { slugify } from '../../utils/slugify';
 import { QuestionList } from '../../components/QuestionList';
@@ -11,7 +10,6 @@ import { connect } from 'unistore/preact';
 
 class Settings extends Component {
   state = {
-    db: null,
     questions: [],
     exporting: 0,
     importing: false,
@@ -19,18 +17,15 @@ class Settings extends Component {
   };
 
   async componentDidMount() {
-    const db = new DB();
-    const keys = await db.keys('questions');
-    const questions = await Promise.all(keys.map(x => db.get('questions', x)));
-    this.setState({ db, questions });
+    const keys = await this.props.db.keys('questions');
+    const questions = await Promise.all(
+      keys.map(x => this.props.db.get('questions', x))
+    );
+    this.setState({ questions });
   }
 
   updateTheme = event => {
-    const theme = event.target.value;
     this.props.updateSetting({ key: 'theme', value: event.target.value });
-    // localStorage.setItem('journalbook_theme', theme);
-    // document.querySelector('#app').dataset.theme = theme;
-    // this.setState({ theme });
   };
 
   updateQuestion = (slug, value, attribute = 'text') => {
@@ -41,7 +36,7 @@ class Settings extends Component {
     }
 
     question[attribute] = value;
-    this.state.db.set('questions', slug, question);
+    this.props.db.set('questions', slug, question);
 
     this.setState({ questions });
   };
@@ -56,7 +51,7 @@ class Settings extends Component {
     const slug = slugify(text);
     const question = { slug, text, status: 'live', createdAt: Date.now() };
 
-    await this.state.db.set('questions', slug, question);
+    await this.props.db.set('questions', slug, question);
 
     localStorage.setItem('journalbook_onboarded', true);
     const questions = [...this.state.questions];
@@ -67,15 +62,15 @@ class Settings extends Component {
 
   getData = async () => {
     try {
-      const questionValues = await this.state.db.getAll('questions');
+      const questionValues = await this.props.db.getAll('questions');
       const questions = questionValues.reduce((current, value, index) => {
         current[value.slug] = value;
         return current;
       }, {});
 
-      const entryKeys = await this.state.db.keys('entries');
+      const entryKeys = await this.props.db.keys('entries');
       const entryValues = await Promise.all(
-        entryKeys.map(key => this.state.db.get('entries', key))
+        entryKeys.map(key => this.props.db.get('entries', key))
       );
 
       const entries = entryValues.reduce((current, entry, index) => {
@@ -83,7 +78,7 @@ class Settings extends Component {
         return current;
       }, {});
 
-      const highlights = await this.state.db.keys('highlights');
+      const highlights = await this.props.db.keys('highlights');
 
       return { questions, entries, highlights };
     } catch (e) {
@@ -140,25 +135,25 @@ class Settings extends Component {
 
       const questionKeys = Object.keys(questions);
       questionKeys.map(async key => {
-        const current = await this.state.db.get('questions', key);
+        const current = await this.props.db.get('questions', key);
         if (!current) {
-          await this.state.db.set('questions', key, questions[key]);
+          await this.props.db.set('questions', key, questions[key]);
         }
       });
 
       const entryKeys = Object.keys(entries);
       await Promise.all(
         entryKeys.map(async key => {
-          const current = await this.state.db.get('entries', key);
+          const current = await this.props.db.get('entries', key);
           if (!current) {
-            return this.state.db.set('entries', key, entries[key]);
+            return this.props.db.set('entries', key, entries[key]);
           }
         })
       );
 
       await Promise.all(
         highlights.map(async key => {
-          return this.state.db.set('highlights', key, true);
+          return this.props.db.set('highlights', key, true);
         })
       );
 
@@ -172,8 +167,8 @@ class Settings extends Component {
   };
 
   deleteData = async () => {
-    await this.state.db.clear('entries');
-    await this.state.db.clear('questions');
+    await this.props.db.clear('entries');
+    await this.props.db.clear('questions');
     localStorage.removeItem('journalbook_onboarded');
     window.location.href = '/';
   };
@@ -248,6 +243,6 @@ class Settings extends Component {
 }
 
 export default connect(
-  'settings',
+  'settings, db',
   actions
 )(Settings);

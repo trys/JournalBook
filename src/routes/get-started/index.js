@@ -1,17 +1,15 @@
 import { h, Component } from 'preact';
-import { DB } from '../../utils/db';
 import { slugify } from '../../utils/slugify';
 import { Link } from 'preact-router/match';
 import { url } from '../../utils/date';
 import { QuestionList } from '../../components/QuestionList';
 import { AddQuestion } from '../../components/AddQuestion';
-import { DBError } from '../../components/DBError';
+import { connect } from 'unistore/preact';
 
 const today = url();
 
-export default class GetStarted extends Component {
+class GetStarted extends Component {
   state = {
-    db: null,
     questions: [],
     defaultQuestions: [
       "What's happened today?",
@@ -19,20 +17,14 @@ export default class GetStarted extends Component {
       'What would you change about today?',
       'Notes and musings',
     ],
-    dbError: false,
   };
 
   async componentDidMount() {
-    try {
-      const db = await new DB();
-      const keys = await db.keys('questions');
-      const questions = await Promise.all(
-        keys.map(x => db.get('questions', x))
-      );
-      this.setState({ db, questions });
-    } catch (e) {
-      this.setState({ dbError: true });
-    }
+    const keys = await this.props.db.keys('questions');
+    const questions = await Promise.all(
+      keys.map(x => this.props.db.get('questions', x))
+    );
+    this.setState({ questions });
   }
 
   onboard() {
@@ -47,7 +39,7 @@ export default class GetStarted extends Component {
     }
 
     question[attribute] = value;
-    this.state.db.set('questions', slug, question);
+    this.props.db.set('questions', slug, question);
 
     this.setState({ questions });
   };
@@ -60,7 +52,7 @@ export default class GetStarted extends Component {
     const slug = slugify(text);
     const question = { slug, text, status: 'live', createdAt: Date.now() };
 
-    await this.state.db.set('questions', slug, question);
+    await this.props.db.set('questions', slug, question);
 
     this.onboard();
     const questions = [...this.state.questions];
@@ -80,7 +72,7 @@ export default class GetStarted extends Component {
     });
   };
 
-  render(props, { questions, defaultQuestions, dbError }) {
+  render(props, { questions, defaultQuestions }) {
     return (
       <div class="wrap lift-children">
         <img src="/assets/images/welcome.svg" class="home-image" alt="" />
@@ -134,11 +126,9 @@ export default class GetStarted extends Component {
             </Link>
           </div>
         ) : null}
-
-        {dbError && (
-          <DBError toggle={() => this.setState({ dbError: false })} />
-        )}
       </div>
     );
   }
 }
+
+export default connect('db')(GetStarted);

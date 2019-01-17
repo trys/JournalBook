@@ -1,10 +1,10 @@
 import { h, Component } from 'preact';
 import { filledArray, months as monthNames, pad } from '../../utils/date';
-import { DB } from '../../utils/db';
 import Traverse from '../../components/Traverse';
 import { Link } from 'preact-router/match';
+import { connect } from 'unistore/preact';
 
-export default class Year extends Component {
+class Year extends Component {
   state = {
     months: filledArray(),
   };
@@ -25,8 +25,7 @@ export default class Year extends Component {
       return;
     }
 
-    const db = new DB();
-    const dates = await db.keys('entries');
+    const dates = await this.props.db.keys('entries');
 
     const months = dates
       .map(x => x.split('_').shift())
@@ -77,3 +76,5 @@ export default class Year extends Component {
     );
   }
 }
+
+export default connect('db')(Year);

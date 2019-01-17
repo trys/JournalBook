@@ -1,13 +1,12 @@
 import { h, Component } from 'preact';
 import { Link } from 'preact-router/match';
 import { ymd, url, format, compare } from '../../utils/date';
-import { DB } from '../../utils/db';
 import Traverse from '../../components/Traverse';
+import { connect } from 'unistore/preact';
 
-export default class Day extends Component {
+class Day extends Component {
   state = {
     date: null,
-    db: null,
     questions: null,
     highlighted: false,
     clicked: false,
@@ -23,7 +22,7 @@ export default class Day extends Component {
   }
 
   getData = async props => {
-    const { day, month, year } = props;
+    const { day, month, year, db } = props;
     const date = new Date(year, Number(month) - 1, day);
     const key = ymd(date);
 
@@ -32,7 +31,6 @@ export default class Day extends Component {
       return;
     }
 
-    const db = new DB();
     const keys = await db.keys('questions');
     const questions = await Promise.all(
       keys.map(x => db.get('questions', x))
@@ -50,7 +48,6 @@ export default class Day extends Component {
     this.setState(
       {
         date,
-        db,
         questions,
         key,
         highlighted: !!highlighted,
@@ -74,9 +71,9 @@ export default class Day extends Component {
     const { key } = this.state;
 
     if (highlighted) {
-      this.state.db.set('highlights', key, true);
+      this.props.db.set('highlights', key, true);
     } else {
-      this.state.db.delete('highlights', key);
+      this.props.db.delete('highlights', key);
     }
 
     this.setState({ highlighted: highlighted, clicked: highlighted });
@@ -91,7 +88,7 @@ export default class Day extends Component {
 
     const { key } = this.state;
     question.answer = answer;
-    this.state.db.set('entries', `${key}_${slug}`, answer);
+    this.props.db.set('entries', `${key}_${slug}`, answer);
 
     this.setState({ questions });
   };
@@ -117,7 +114,7 @@ export default class Day extends Component {
           lastLink={url(yesterday)}
           nextLink={isToday ? '' : url(tomorrow)}
           disableNext={isToday}
-          actions={(
+          actions={
             <button
               type="button"
               class="button--reset"
@@ -140,13 +137,15 @@ export default class Day extends Component {
                 />
               </svg>
             </button>
-          )}
+          }
         />
 
         {questions === null ? null : questions.length ? (
           questions.map(({ slug, text, answer = '' }, index) => (
             <div key={slug} class="question">
-              <label for={slug} dir="auto">{text}</label>
+              <label for={slug} dir="auto">
+                {text}
+              </label>
               <textarea
                 id={slug}
                 dir="auto"
@@ -172,3 +171,5 @@ export default class Day extends Component {
     );
   }
 }
+
+export default connect('db')(Day);

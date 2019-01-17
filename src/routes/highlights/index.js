@@ -1,10 +1,10 @@
 import { h, Component } from 'preact';
-import { DB } from '../../utils/db';
 import Traverse from '../../components/Traverse';
 import { Link } from 'preact-router/match';
 import { parse, ymd, url, sortDates, shortDate } from '../../utils/date';
+import { connect } from 'unistore/preact';
 
-export default class Highlights extends Component {
+class Highlights extends Component {
   state = {
     years: {},
   };
@@ -14,8 +14,7 @@ export default class Highlights extends Component {
   }
 
   getData = async () => {
-    const db = new DB();
-    const highlights = await db.keys('highlights');
+    const highlights = await this.props.db.keys('highlights');
     const years = highlights.reduce((current, date) => {
       const year = date.substring(0, 4);
       if (!current[year]) current[year] = [];
@@ -67,3 +66,5 @@ export default class Highlights extends Component {
     );
   }
 }
+
+export default connect('db')(Highlights);
