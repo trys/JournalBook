@@ -80,12 +80,23 @@ class Settings extends Component {
 
       const highlights = await this.props.db.keys('highlights');
 
-      return { questions, entries, highlights };
+      const settingKeys = await this.props.db.keys('settings');
+      const settingValues = await Promise.all(
+        settingKeys.map(key => this.props.db.get('settings', key))
+      );
+
+      const settings = settingValues.reduce((current, setting, index) => {
+        current[settingKeys[index]] = setting;
+        return current;
+      }, {});
+
+      return { questions, entries, highlights, settings };
     } catch (e) {
       return {
         questions: {},
         entries: {},
         highlights: [],
+        settings: {},
       };
     }
   };
@@ -126,7 +137,7 @@ class Settings extends Component {
     this.setState({ importing: true });
 
     reader.onload = (() => async e => {
-      const { entries, questions, highlights = [] } = JSON.parse(
+      const { entries, questions, highlights = [], settings = {} } = JSON.parse(
         e.target.result
       );
       if (!entries || !questions || !Array.isArray(highlights)) {
@@ -151,6 +162,16 @@ class Settings extends Component {
         })
       );
 
+      const settingKeys = Object.keys(settings);
+      await Promise.all(
+        settingKeys.map(async key => {
+          const current = await this.props.db.get('settings', key);
+          if (!current) {
+            return this.props.db.set('settings', key, settings[key]);
+          }
+        })
+      );
+
       await Promise.all(
         highlights.map(async key => {
           return this.props.db.set('highlights', key, true);
@@ -169,6 +190,8 @@ class Settings extends Component {
   deleteData = async () => {
     await this.props.db.clear('entries');
     await this.props.db.clear('questions');
+    await this.props.db.clear('highlights');
+    await this.props.db.clear('settings');
     localStorage.removeItem('journalbook_onboarded');
     window.location.href = '/';
   };
