@@ -11,3 +11,17 @@ export const getDefaultTheme = (settings = {}) => {
 
   return '';
 };
+
+export const prefersAnimation = (settings = {}) => {
+  const preference = settings.animation || null;
+
+  if (preference !== null) {
+    return preference;
+  }
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return 'off';
+  }
+
+  return '';
+};

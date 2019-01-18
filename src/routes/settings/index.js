@@ -4,7 +4,7 @@ import { slugify } from '../../utils/slugify';
 import { QuestionList } from '../../components/QuestionList';
 import { AddQuestion } from '../../components/AddQuestion';
 import { ScaryButton } from '../../components/ScaryButton';
-import { getDefaultTheme } from '../../utils/theme';
+import { getDefaultTheme, prefersAnimation } from '../../utils/theme';
 import { actions } from '../../store/actions';
 import { connect } from 'unistore/preact';
 
@@ -24,8 +24,10 @@ class Settings extends Component {
     this.setState({ questions });
   }
 
-  updateTheme = event => {
-    this.props.updateSetting({ key: 'theme', value: event.target.value });
+  updateSetting = key => {
+    return event => {
+      this.props.updateSetting({ key, value: event.target.value });
+    };
   };
 
   updateQuestion = (slug, value, attribute = 'text') => {
@@ -68,27 +70,9 @@ class Settings extends Component {
         return current;
       }, {});
 
-      const entryKeys = await this.props.db.keys('entries');
-      const entryValues = await Promise.all(
-        entryKeys.map(key => this.props.db.get('entries', key))
-      );
-
-      const entries = entryValues.reduce((current, entry, index) => {
-        current[entryKeys[index]] = entry;
-        return current;
-      }, {});
-
+      const entries = await this.props.db.getObject('entries');
       const highlights = await this.props.db.keys('highlights');
-
-      const settingKeys = await this.props.db.keys('settings');
-      const settingValues = await Promise.all(
-        settingKeys.map(key => this.props.db.get('settings', key))
-      );
-
-      const settings = settingValues.reduce((current, setting, index) => {
-        current[settingKeys[index]] = setting;
-        return current;
-      }, {});
+      const settings = await this.props.db.getObject('settings');
 
       return { questions, entries, highlights, settings };
     } catch (e) {
@@ -198,6 +182,7 @@ class Settings extends Component {
 
   render({ settings = {} }, { questions, exporting, files, importing }) {
     const theme = settings.theme || getDefaultTheme(settings);
+    const animation = settings.animation || prefersAnimation(settings);
 
     return (
       <div class="wrap lift-children">
@@ -254,12 +239,31 @@ class Settings extends Component {
 
         <div className="mb40">
           <hr />
-          <label for="theme">Theme</label>
-          <select id="theme" onChange={this.updateTheme} value={theme}>
-            <option value="">Default</option>
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-          </select>
+          <p>
+            <label for="theme">Theme</label>
+            <select
+              id="theme"
+              onChange={this.updateSetting('theme')}
+              value={theme}
+            >
+              <option value="">Default</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </p>
+
+          <p>
+            <label for="animation">Animation</label>
+            <select
+              id="animation"
+              onChange={this.updateSetting('animation')}
+              value={animation}
+            >
+              <option value="">Default</option>
+              <option value="on">On</option>
+              <option value="off">Off</option>
+            </select>
+          </p>
         </div>
       </div>
     );
