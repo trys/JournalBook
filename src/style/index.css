@@ -171,6 +171,9 @@ hr {
   border-radius: 4px;
   margin: 0 0 20px;
   font-size: 12px;
+}
+
+[data-reduce-motion='false'] .button {
   transition: 300ms box-shadow;
 }
 
@@ -245,7 +248,7 @@ select {
 
 option {
   background: #eee;
-  color:#000;
+  color: #000;
 }
 
 [type='text'] {
@@ -340,9 +343,12 @@ textarea {
   width: calc(100% + 40px);
   margin: -40px -20px 10px;
   padding: 40px 20px 20px;
-  animation: lift 750ms forwards;
   background: var(--traverseBG);
   color: var(--traverse);
+}
+
+[data-reduce-motion='false'] .traverse {
+  animation: lift 750ms forwards;
 }
 
 .traverse--center {
@@ -357,7 +363,7 @@ textarea {
   margin-right: 0;
 }
 
-.traverse a {
+[data-reduce-motion='false'] .traverse a {
   transition: 300ms opacity;
 }
 
@@ -445,6 +451,9 @@ textarea {
   font: inherit;
   color: inherit;
   outline: none;
+}
+
+[data-reduce-motion='false'] .default-question {
   transition: 300ms box-shadow;
 }
 
@@ -470,8 +479,8 @@ textarea {
   }
 }
 
-.lift,
-.lift-children > * {
+[data-reduce-motion='false'] .lift,
+[data-reduce-motion='false'] .lift-children > * {
   animation: lift 750ms forwards;
   opacity: 0;
 }
@@ -525,7 +534,6 @@ textarea {
   border: 1px solid var(--line);
   position: absolute;
   border-radius: 1em;
-  transition: 300ms background-color;
   left: 0;
   top: 0;
 }
@@ -540,6 +548,13 @@ textarea {
   height: 100%;
   border: 1px solid var(--line);
   background: #fff;
+}
+
+[data-reduce-motion='false'] .toggle i {
+  transition: 300ms background-color;
+}
+
+[data-reduce-motion='false'] .toggle i:before {
   transition: 300ms transform;
 }
 
@@ -617,35 +632,6 @@ textarea {
   text-align: center;
 }
 
-/* Highlight */
-.highlight-today {
-  margin: 20px 20px;
-}
-
-.highlight-today svg {
-  vertical-align: middle;
-  margin: -2px 8px 0 0;
-}
-
-.highlight-today .button.clicked {
-  animation: shake 0.5s ease-in-out;
-}
-
-@keyframes shake {
-  33% {
-    transform: rotate(2deg);
-  }
-
-  66% {
-    transform: rotate(-2deg);
-  }
-
-  0%,
-  100% {
-    transform: rotate(0deg);
-  }
-}
-
 /* DB error */
 .db-error {
   position: fixed;
@@ -683,7 +669,6 @@ textarea {
   top: 0;
 }
 
-
 /* Themes */
 [data-theme='dark'] {
   --translucentLight: rgba(255, 255, 255, 0.1);
@@ -710,4 +695,3 @@ textarea {
 [data-theme='dark'] select {
   background-image: url('data:image/svg+xml;charset=utf-8;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iOCIgdmlld0JveD0iMCAwIDEyIDgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTS42NjggMS41MWw0Ljk3NCA0Ljk3NSA0Ljk0OC00Ljk1IiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC40KSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L3N2Zz4=');
 }
-

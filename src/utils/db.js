@@ -67,4 +67,14 @@ export class DB {
         .getAll()
     );
   }
+
+  async getObject(table) {
+    const keys = await this.keys(table);
+    const values = await Promise.all(keys.map(key => this.get(table, key)));
+
+    return values.reduce((current, entry, index) => {
+      current[keys[index]] = entry;
+      return current;
+    }, {});
+  }
 }

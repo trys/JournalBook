@@ -3,13 +3,7 @@ import { DB } from '../utils/db';
 export const actions = store => ({
   boot: async (state, dbPromise) => {
     const db = new DB(dbPromise);
-
-    const settingKeys = await db.keys('settings');
-    const savedSettings = await settingKeys.reduce(async (current, key) => {
-      current[key] = await db.get('settings', key);
-      return current;
-    }, {});
-
+    const savedSettings = await db.getObject('settings');
     return { db, settings: { ...state.settings, ...savedSettings } };
   },
 
