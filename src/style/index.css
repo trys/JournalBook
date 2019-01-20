@@ -363,17 +363,9 @@ textarea {
   margin-right: 0;
 }
 
-[data-reduce-motion='false'] .traverse a {
-  transition: 300ms opacity;
-}
-
-.traverse a:hover {
-  opacity: 0.7;
-}
-
 .traverse button,
 .traverse__arrow {
-  padding: 0 10px;
+  padding: 0 13px;
 }
 
 .traverse__arrow:last-child {
