@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import { ymd } from '../../utils/date';
+import { Link } from 'preact-router/match';
 import { slugify } from '../../utils/slugify';
 import { QuestionList } from '../../components/QuestionList';
 import { AddQuestion } from '../../components/AddQuestion';
@@ -7,6 +8,7 @@ import { ScaryButton } from '../../components/ScaryButton';
 import { getDefaultTheme, prefersAnimation } from '../../utils/theme';
 import { actions } from '../../store/actions';
 import { connect } from 'unistore/preact';
+import storage from '../../utils/storage';
 
 class Settings extends Component {
   state = {
@@ -26,6 +28,12 @@ class Settings extends Component {
 
   updateSetting = key => event => {
     this.props.updateSetting({ key, value: event.target.value });
+  };
+
+  updateStorageAdapter = () => event => {
+    const adapter = event.target.value;
+    this.props.updateSetting({ key: 'storageAdapter', value: adapter });
+    storage.setAdapter(adapter);
   };
 
   updateQuestion = (slug, value, attribute = 'text') => {
@@ -178,6 +186,7 @@ class Settings extends Component {
 
   render({ settings = {} }, { questions, exporting, files, importing }) {
     const theme = settings.theme || getDefaultTheme(settings);
+    const storageAdapter = settings.storageAdapter || storage.getAdapter();
     const animation = settings.animation || prefersAnimation(settings);
 
     return (
@@ -195,41 +204,102 @@ class Settings extends Component {
 
           <h2>Manage your data</h2>
 
-          {exporting === 2 && files.length ? (
-            <a
-              class="button button--space"
-              download={files[0].name}
-              href={files[0].data}
-              onClick={() => {
-                setTimeout(() => {
-                  this.clean();
-                  this.setState({ exporting: 0 });
-                }, 1500);
-              }}
-            >
-              Click to Download
-            </a>
-          ) : (
-            <button
-              type="button"
-              class={`button button--space button--grey`}
-              onClick={this.prepareExport}
-            >
-              {['Export', 'Exporting'][exporting]}
-            </button>
+          <label for="storage">Storage</label>
+          <fieldset id="storage">
+            <label for="file">
+              <input
+                type="radio"
+                id="file"
+                name="storage"
+                value="file"
+                checked={storageAdapter === 'file'}
+                onChange={this.updateStorageAdapter()}
+              />
+              <span class="button button--space button--grey">Local File</span>
+            </label>
+            <label for="dropbox">
+              <input
+                type="radio"
+                id="dropbox"
+                name="storage"
+                value="dropbox"
+                checked={storageAdapter === 'dropbox'}
+                onChange={this.updateStorageAdapter()}
+              />
+              <span class="button button--space button--grey">Dropbox</span>
+            </label>
+          </fieldset>
+
+          {storageAdapter === 'file' && (
+            <div>
+              <label>Local File</label>
+              {exporting === 2 && files.length ? (
+                <a
+                  class="button button--space"
+                  download={files[0].name}
+                  href={files[0].data}
+                  onClick={() => {
+                    setTimeout(() => {
+                      this.clean();
+                      this.setState({ exporting: 0 });
+                    }, 1500);
+                  }}
+                >
+                  Click to Download
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  class={`button button--space button--grey`}
+                  onClick={this.export}
+                >
+                  {['Export', 'Exporting'][exporting]}
+                </button>
+              )}
+
+              <input
+                type="file"
+                class="screen-reader-only"
+                id="import"
+                onChange={this.import}
+                accept="application/json"
+              />
+              <label for="import" class="button button--grey">
+                {importing ? 'Importing...' : 'Import'}
+              </label>
+            </div>
           )}
 
-          <input
-            type="file"
-            class="screen-reader-only"
-            id="import"
-            onChange={this.importData}
-            accept="application/json"
-          />
-          <label for="import" class="button button--grey">
-            {importing ? 'Importing...' : 'Import'}
-          </label>
+          {storageAdapter === 'dropbox' && (
+            <div>
+              <label>Dropbox</label>
+              {storage.adapters.dropbox.isAuthenticated() ? (
+                <div>
+                  <button
+                    type="button"
+                    class={`button button--space button--grey`}
+                    onClick={this.export}
+                  >
+                    {['Export', 'Exporting', 'Exported!'][exporting]}
+                  </button>
+                  <button
+                    type="button"
+                    class={`button button--grey`}
+                    onClick={this.import}
+                  >
+                    {importing ? 'Importing...' : 'Import'}
+                  </button>
+                  <ScaryButton onClick={this.logout}>Sign Out</ScaryButton>
+                </div>
+              ) : (
+                <Link href="/auth/dropbox" class="button">
+                  Login with Dropbox
+                </Link>
+              )}
+            </div>
+          )}
 
+          <label for="delete">Browser data</label>
           <ScaryButton onClick={this.deleteData}>Delete your data</ScaryButton>
         </div>
 

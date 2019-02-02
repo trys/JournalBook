@@ -267,6 +267,28 @@ textarea {
   padding: 0;
 }
 
+fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+#storage label {
+  display: inline;
+}
+label input {
+  display: none;
+}
+
+[type='radio'] + span {
+  cursor: pointer;
+}
+
+[type='radio']:checked + span {
+  background: var(--buttonBG) !important;
+  color: var(--buttonColor);
+}
+
 /* Header */
 .header {
   position: fixed;
