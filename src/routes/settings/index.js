@@ -99,89 +99,43 @@ class Settings extends Component {
     }
   };
 
-  prepareExport = async () => {
+  deleteData = async () => {
+    await this.props.db.clear('entries');
+    await this.props.db.clear('questions');
+    await this.props.db.clear('highlights');
+    localStorage.removeItem('journalbook_onboarded');
+    window.location.href = '/';
+  };
+
+  export = async () => {
+    this.clean();
+
+    this.setState({ exporting: 1, files: [] });
     try {
-      const MIME_TYPE = 'text/json;charset=utf-8';
-
-      this.clean();
-
-      this.setState({ exporting: 1, files: [] });
-
-      const data = await this.getData();
-      const blob = new Blob([JSON.stringify(data)], { type: MIME_TYPE });
-
-      const file = {
-        name: `journalbook_${ymd()}.json`,
-        data: window.URL.createObjectURL(blob),
-      };
-      this.setState({ files: [file], exporting: 2 });
+      const files = await storage.adapter.export();
+      this.setState({ files, exporting: 2 }, () =>
+        setTimeout(() => this.setState({ exporting: 0 }), 1500)
+      );
     } catch (e) {
       console.error(e);
       this.setState({ files: [], exporting: 0 });
     }
   };
 
-  importData = async event => {
-    const reader = new FileReader();
-    const file = event.target.files[0];
+  import = async () => {
     this.setState({ importing: true });
-
-    reader.onload = (() => async e => {
-      const { entries, questions, highlights = [], settings = {} } = JSON.parse(
-        e.target.result
-      );
-      if (!entries || !questions || !Array.isArray(highlights)) {
-        return;
-      }
-
-      const questionKeys = Object.keys(questions);
-      questionKeys.map(async key => {
-        const current = await this.props.db.get('questions', key);
-        if (!current) {
-          await this.props.db.set('questions', key, questions[key]);
-        }
-      });
-
-      const entryKeys = Object.keys(entries);
-      await Promise.all(
-        entryKeys.map(async key => {
-          const current = await this.props.db.get('entries', key);
-          if (!current) {
-            return this.props.db.set('entries', key, entries[key]);
-          }
-        })
-      );
-
-      const settingKeys = Object.keys(settings);
-      await Promise.all(
-        settingKeys.map(async key => {
-          const current = await this.props.db.get('settings', key);
-          if (!current) {
-            return this.props.db.set('settings', key, settings[key]);
-          }
-        })
-      );
-
-      await Promise.all(
-        highlights.map(async key => this.props.db.set('highlights', key, true))
-      );
-
-      localStorage.setItem('journalbook_onboarded', true);
-      localStorage.setItem('journalbook_dates_migrated', true);
-
-      window.location.reload();
-    })();
-
-    reader.readAsText(file);
+    await storage.adapter.import();
+    localStorage.setItem('journalbook_onboarded', true);
+    localStorage.setItem('journalbook_dates_migrated', true);
+    this.setState({ importing: false });
+    window.location.reload();
   };
 
-  deleteData = async () => {
-    await this.props.db.clear('entries');
-    await this.props.db.clear('questions');
-    await this.props.db.clear('highlights');
-    await this.props.db.clear('highlights');
-    localStorage.removeItem('journalbook_onboarded');
-    window.location.href = '/';
+  logout = async () => {
+    storage.adapter.logout();
+    storage.setAdapter('file');
+    this.updateStorageAdapter()({ target: { value: 'file' } });
+    window.location.reload();
   };
 
   render({ settings = {} }, { questions, exporting, files, importing }) {
