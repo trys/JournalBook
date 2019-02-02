@@ -24,10 +24,8 @@ class Settings extends Component {
     this.setState({ questions });
   }
 
-  updateSetting = key => {
-    return event => {
-      this.props.updateSetting({ key, value: event.target.value });
-    };
+  updateSetting = key => event => {
+    this.props.updateSetting({ key, value: event.target.value });
   };
 
   updateQuestion = (slug, value, attribute = 'text') => {
@@ -157,9 +155,7 @@ class Settings extends Component {
       );
 
       await Promise.all(
-        highlights.map(async key => {
-          return this.props.db.set('highlights', key, true);
-        })
+        highlights.map(async key => this.props.db.set('highlights', key, true))
       );
 
       localStorage.setItem('journalbook_onboarded', true);
