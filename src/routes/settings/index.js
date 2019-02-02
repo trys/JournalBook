@@ -30,7 +30,7 @@ class Settings extends Component {
     this.props.updateSetting({ key, value: event.target.value });
   };
 
-  updateStorageAdapter = () => event => {
+  updateStorageAdapter = event => {
     const adapter = event.target.value;
     this.props.updateSetting({ key: 'storageAdapter', value: adapter });
     storage.setAdapter(adapter);
@@ -134,7 +134,7 @@ class Settings extends Component {
   logout = async () => {
     storage.adapter.logout();
     storage.setAdapter('file');
-    this.updateStorageAdapter()({ target: { value: 'file' } });
+    this.updateStorageAdapter({ target: { value: 'file' } });
     window.location.reload();
   };
 
@@ -167,7 +167,7 @@ class Settings extends Component {
                 name="storage"
                 value="file"
                 checked={storageAdapter === 'file'}
-                onChange={this.updateStorageAdapter()}
+                onChange={this.updateStorageAdapter}
               />
               <span class="button button--space button--grey">Local File</span>
             </label>
@@ -178,7 +178,7 @@ class Settings extends Component {
                 name="storage"
                 value="dropbox"
                 checked={storageAdapter === 'dropbox'}
-                onChange={this.updateStorageAdapter()}
+                onChange={this.updateStorageAdapter}
               />
               <span class="button button--space button--grey">Dropbox</span>
             </label>
