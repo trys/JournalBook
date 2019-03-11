@@ -36,6 +36,8 @@ class Day extends Component {
       keys.map(x => db.get('questions', x))
     ).then(results => results.filter(x => x.status === 'live'));
 
+    questions.sort((a, b) => a.createdAt - b.createdAt);
+
     const answers = await Promise.all(
       questions.map(({ slug }) => db.get('entries', `${key}_${slug}`))
     );

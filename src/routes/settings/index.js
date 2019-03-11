@@ -21,6 +21,8 @@ class Settings extends Component {
     const questions = await Promise.all(
       keys.map(x => this.props.db.get('questions', x))
     );
+    questions.sort((a, b) => a.createdAt - b.createdAt);
+
     this.setState({ questions });
   }
 
