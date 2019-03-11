@@ -9,6 +9,7 @@ import Day from '../routes/day';
 import Month from '../routes/months';
 import Year from '../routes/year';
 import Settings from '../routes/settings';
+import Stats from '../routes/stats';
 import GetStarted from '../routes/get-started';
 import Highlights from '../routes/highlights';
 import About from '../routes/about';
@@ -97,6 +98,7 @@ class App extends Component {
             <Home path="/" />
             <GetStarted path="/get-started/" />
             <Settings path="/settings/" />
+            <Stats path="/stats/" />
             <About path="/about/" />
             <Highlights path="/highlights/" />
             <Day path="/:year/:month/:day" />
