@@ -13,6 +13,9 @@ const Home = () =>
         <img src="/assets/images/study.svg" class="home-image" alt="" />
         <span class="button">Start writing</span>
       </Link>
+      <p>
+        Don't forget to <Link href="/settings/">backup</Link> once in a while!
+      </p>
       <Link href="/about/">About JournalBook</Link>
     </div>
   ) : (
