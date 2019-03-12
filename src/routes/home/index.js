@@ -16,7 +16,10 @@ const Home = () =>
       <p>
         Don't forget to <Link href="/settings/">backup</Link> once in a while!
       </p>
-      <Link href="/about/">About JournalBook</Link>
+      <p>
+        <Link href="/stats/">Stats</Link> - {''}
+        <Link href="/about/">About JournalBook</Link>
+      </p>
     </div>
   ) : (
     <div class="wrap wrap--thin center home lift-children">

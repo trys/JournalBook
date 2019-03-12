@@ -19,35 +19,52 @@ class Stats extends Component {
 
   getData = async () => {
     try {
-      const keys = await this.props.db.keys('entries');
-      const totalEntries = keys.length;
+      const keysData = await this.props.db.keys('entries');
+      const totalEntries = keysData.length;
 
-      const uniqueDates = keys
-        .map(key => {
-          return key.split('_').shift();
-        })
-        .reduce((c, date) => {
-          if (c.indexOf(date) === -1) {
-            c.push(date);
-          }
+      if (!totalEntries) {
+        throw new Error();
+      }
 
-          return c;
-        }, []);
+      // Prepare the keys
+      const keys = keysData.map(key => {
+        return Number(key.split('_').shift());
+      });
+      keys.sort((a, b) => a - b);
 
+      const unique = keys.reduce(this.removeDuplicates, []);
+
+      // const dates = unique.map(this.keyToDate);
+
+      // Word count
       const entries = await this.props.db.getAll('entries');
       const wordCount = entries.reduce((c, entry) => {
-        return c + entry.split(' ').length + 1;
+        return c + entry.split(' ').length;
       }, 0);
 
       this.setState({
         totalEntries,
-        uniqueDates: uniqueDates.length,
+        uniqueDates: unique.length,
         wordCount,
       });
     } catch (e) {
-      console.error(e);
+      // console.error(e);
     }
   };
+
+  removeDuplicates(c, date) {
+    return c.indexOf(date) === -1 ? [...c, date] : c;
+  }
+
+  keyToDate(date) {
+    const d = date.toString();
+    const dateString = `${d.substring(0, 4)}-${d.substring(4, 6)}-${d.substring(
+      6,
+      8
+    )}`;
+
+    return new Date(dateString);
+  }
 
   render({}, { totalEntries, uniqueDates, wordCount }) {
     const stats = (
@@ -57,7 +74,8 @@ class Stats extends Component {
           <strong>{totalEntries} entries</strong> over{' '}
           <strong>{uniqueDates} days</strong>!
         </p>
-        <p>Nicely done! 👏</p>
+        <p>Well done! 👏</p>
+        <small>More stats to follow...</small>
       </div>
     );
 
@@ -70,8 +88,7 @@ class Stats extends Component {
     return (
       <div class="wrap lift-children">
         <Traverse title="Stats" className="traverse--center" />
-
-        {isEmpty ? empty : stats}
+        <div className="pt20 center">{isEmpty ? empty : stats}</div>
       </div>
     );
   }
