@@ -1,12 +1,15 @@
 import { h, Component } from 'preact';
 import { connect } from 'unistore/preact';
+import { Link } from 'preact-router/match';
 import Traverse from '../../components/Traverse';
+import { pluralise } from '../../utils/pluralise';
 
 class Stats extends Component {
   state = {
     totalEntries: 0,
     uniqueDates: 0,
     wordCount: 0,
+    totalHighlights: 0,
   };
 
   componentDidMount() {
@@ -42,10 +45,15 @@ class Stats extends Component {
         return c + entry.split(' ').length;
       }, 0);
 
+      // Highlights
+      const highlights = await this.props.db.getAll('highlights');
+      const totalHighlights = highlights.length;
+
       this.setState({
         totalEntries,
         uniqueDates: unique.length,
         wordCount,
+        totalHighlights,
       });
     } catch (e) {
       // console.error(e);
@@ -66,16 +74,30 @@ class Stats extends Component {
     return new Date(dateString);
   }
 
-  render({}, { totalEntries, uniqueDates, wordCount }) {
+  render({}, { totalEntries, uniqueDates, wordCount, totalHighlights }) {
     const stats = (
       <div>
         <p>
-          You've written <strong>{wordCount}</strong> words in{' '}
-          <strong>{totalEntries} entries</strong> over{' '}
-          <strong>{uniqueDates} days</strong>!
+          You've written <strong>{wordCount}</strong>{' '}
+          {pluralise('word', wordCount)} in{' '}
+          <strong>
+            {totalEntries} {pluralise('entry', totalEntries, 'entries')}
+          </strong>{' '}
+          over{' '}
+          <strong>
+            {uniqueDates} {pluralise('day', uniqueDates)}
+          </strong>
+          !
         </p>
+        {totalHighlights ? (
+          <p>
+            You've also highlighted <strong>{totalHighlights}</strong>{' '}
+            {pluralise('day', totalHighlights)}. Check{' '}
+            {pluralise('it', totalHighlights, 'them')} out{' '}
+            <Link href="/highlights/">here</Link>
+          </p>
+        ) : null}
         <p>Well done! 👏</p>
-        <small>More stats to follow...</small>
       </div>
     );
 
