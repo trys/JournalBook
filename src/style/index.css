@@ -158,6 +158,22 @@ hr {
   margin-bottom: 40px;
 }
 
+.pt20 {
+  padding-top: 20px;
+}
+
+.pt40 {
+  padding-top: 40px;
+}
+
+.pb20 {
+  padding-bottom: 20px;
+}
+
+.pb40 {
+  padding-bottom: 40px;
+}
+
 /* Buttons */
 .button {
   display: inline-block;
