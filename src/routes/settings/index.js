@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import { ymd } from '../../utils/date';
+import { Link } from 'preact-router/match';
 import { slugify } from '../../utils/slugify';
 import { QuestionList } from '../../components/QuestionList';
 import { AddQuestion } from '../../components/AddQuestion';
@@ -7,6 +8,7 @@ import { ScaryButton } from '../../components/ScaryButton';
 import { getDefaultTheme, prefersAnimation } from '../../utils/theme';
 import { actions } from '../../store/actions';
 import { connect } from 'unistore/preact';
+import storage from '../../utils/storage';
 
 class Settings extends Component {
   state = {
@@ -26,10 +28,14 @@ class Settings extends Component {
     this.setState({ questions });
   }
 
-  updateSetting = key => {
-    return event => {
-      this.props.updateSetting({ key, value: event.target.value });
-    };
+  updateSetting = key => event => {
+    this.props.updateSetting({ key, value: event.target.value });
+  };
+
+  updateStorageAdapter = event => {
+    const adapter = event.target.value;
+    this.props.updateSetting({ key: 'storageAdapter', value: adapter });
+    storage.setAdapter(adapter);
   };
 
   updateQuestion = (slug, value, attribute = 'text') => {
@@ -95,95 +101,48 @@ class Settings extends Component {
     }
   };
 
-  prepareExport = async () => {
+  deleteData = async () => {
+    await this.props.db.clear('entries');
+    await this.props.db.clear('questions');
+    await this.props.db.clear('highlights');
+    localStorage.removeItem('journalbook_onboarded');
+    window.location.href = '/';
+  };
+
+  export = async () => {
+    this.clean();
+
+    this.setState({ exporting: 1, files: [] });
     try {
-      const MIME_TYPE = 'text/json;charset=utf-8';
-
-      this.clean();
-
-      this.setState({ exporting: 1, files: [] });
-
-      const data = await this.getData();
-      const blob = new Blob([JSON.stringify(data)], { type: MIME_TYPE });
-
-      const file = {
-        name: `journalbook_${ymd()}.json`,
-        data: window.URL.createObjectURL(blob),
-      };
-      this.setState({ files: [file], exporting: 2 });
+      const files = await storage.adapter.export();
+      this.setState({ files, exporting: 2 }, () =>
+        setTimeout(() => this.setState({ exporting: 0 }), 1500)
+      );
     } catch (e) {
       console.error(e);
       this.setState({ files: [], exporting: 0 });
     }
   };
 
-  importData = async event => {
-    const reader = new FileReader();
-    const file = event.target.files[0];
+  import = async () => {
     this.setState({ importing: true });
-
-    reader.onload = (() => async e => {
-      const { entries, questions, highlights = [], settings = {} } = JSON.parse(
-        e.target.result
-      );
-      if (!entries || !questions || !Array.isArray(highlights)) {
-        return;
-      }
-
-      const questionKeys = Object.keys(questions);
-      questionKeys.map(async key => {
-        const current = await this.props.db.get('questions', key);
-        if (!current) {
-          await this.props.db.set('questions', key, questions[key]);
-        }
-      });
-
-      const entryKeys = Object.keys(entries);
-      await Promise.all(
-        entryKeys.map(async key => {
-          const current = await this.props.db.get('entries', key);
-          if (!current) {
-            return this.props.db.set('entries', key, entries[key]);
-          }
-        })
-      );
-
-      const settingKeys = Object.keys(settings);
-      await Promise.all(
-        settingKeys.map(async key => {
-          const current = await this.props.db.get('settings', key);
-          if (!current) {
-            return this.props.db.set('settings', key, settings[key]);
-          }
-        })
-      );
-
-      await Promise.all(
-        highlights.map(async key => {
-          return this.props.db.set('highlights', key, true);
-        })
-      );
-
-      localStorage.setItem('journalbook_onboarded', true);
-      localStorage.setItem('journalbook_dates_migrated', true);
-
-      window.location.reload();
-    })();
-
-    reader.readAsText(file);
+    await storage.adapter.import();
+    localStorage.setItem('journalbook_onboarded', true);
+    localStorage.setItem('journalbook_dates_migrated', true);
+    this.setState({ importing: false });
+    window.location.reload();
   };
 
-  deleteData = async () => {
-    await this.props.db.clear('entries');
-    await this.props.db.clear('questions');
-    await this.props.db.clear('highlights');
-    await this.props.db.clear('highlights');
-    localStorage.removeItem('journalbook_onboarded');
-    window.location.href = '/';
+  logout = async () => {
+    storage.adapter.logout();
+    storage.setAdapter('file');
+    this.updateStorageAdapter({ target: { value: 'file' } });
+    window.location.reload();
   };
 
   render({ settings = {} }, { questions, exporting, files, importing }) {
     const theme = settings.theme || getDefaultTheme(settings);
+    const storageAdapter = settings.storageAdapter || storage.getAdapter();
     const animation = settings.animation || prefersAnimation(settings);
 
     return (
@@ -201,41 +160,102 @@ class Settings extends Component {
 
           <h2>Manage your data</h2>
 
-          {exporting === 2 && files.length ? (
-            <a
-              class="button button--space"
-              download={files[0].name}
-              href={files[0].data}
-              onClick={() => {
-                setTimeout(() => {
-                  this.clean();
-                  this.setState({ exporting: 0 });
-                }, 1500);
-              }}
-            >
-              Click to Download
-            </a>
-          ) : (
-            <button
-              type="button"
-              class={`button button--space button--grey`}
-              onClick={this.prepareExport}
-            >
-              {['Export', 'Exporting'][exporting]}
-            </button>
+          <label for="storage">Storage</label>
+          <fieldset id="storage">
+            <label for="file">
+              <input
+                type="radio"
+                id="file"
+                name="storage"
+                value="file"
+                checked={storageAdapter === 'file'}
+                onChange={this.updateStorageAdapter}
+              />
+              <span class="button button--space button--grey">Local File</span>
+            </label>
+            <label for="dropbox">
+              <input
+                type="radio"
+                id="dropbox"
+                name="storage"
+                value="dropbox"
+                checked={storageAdapter === 'dropbox'}
+                onChange={this.updateStorageAdapter}
+              />
+              <span class="button button--space button--grey">Dropbox</span>
+            </label>
+          </fieldset>
+
+          {storageAdapter === 'file' && (
+            <div>
+              <label>Local File</label>
+              {exporting === 2 && files.length ? (
+                <a
+                  class="button button--space"
+                  download={files[0].name}
+                  href={files[0].data}
+                  onClick={() => {
+                    setTimeout(() => {
+                      this.clean();
+                      this.setState({ exporting: 0 });
+                    }, 1500);
+                  }}
+                >
+                  Click to Download
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  class={`button button--space button--grey`}
+                  onClick={this.export}
+                >
+                  {['Export', 'Exporting'][exporting]}
+                </button>
+              )}
+
+              <input
+                type="file"
+                class="screen-reader-only"
+                id="import"
+                onChange={this.import}
+                accept="application/json"
+              />
+              <label for="import" class="button button--grey">
+                {importing ? 'Importing...' : 'Import'}
+              </label>
+            </div>
           )}
 
-          <input
-            type="file"
-            class="screen-reader-only"
-            id="import"
-            onChange={this.importData}
-            accept="application/json"
-          />
-          <label for="import" class="button button--grey">
-            {importing ? 'Importing...' : 'Import'}
-          </label>
+          {storageAdapter === 'dropbox' && (
+            <div>
+              <label>Dropbox</label>
+              {storage.adapters.dropbox.isAuthenticated() ? (
+                <div>
+                  <button
+                    type="button"
+                    class={`button button--space button--grey`}
+                    onClick={this.export}
+                  >
+                    {['Export', 'Exporting', 'Exported!'][exporting]}
+                  </button>
+                  <button
+                    type="button"
+                    class={`button button--grey`}
+                    onClick={this.import}
+                  >
+                    {importing ? 'Importing...' : 'Import'}
+                  </button>
+                  <ScaryButton onClick={this.logout}>Sign Out</ScaryButton>
+                </div>
+              ) : (
+                <Link href="/auth/dropbox" class="button">
+                  Login with Dropbox
+                </Link>
+              )}
+            </div>
+          )}
 
+          <label for="delete">Browser data</label>
           <ScaryButton onClick={this.deleteData}>Delete your data</ScaryButton>
         </div>
 

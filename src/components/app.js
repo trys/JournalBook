@@ -13,6 +13,8 @@ import Stats from '../routes/stats';
 import GetStarted from '../routes/get-started';
 import Highlights from '../routes/highlights';
 import About from '../routes/about';
+import Auth from '../routes/auth';
+import AuthCallback from '../routes/auth-callback';
 import NotFound from '../routes/not-found';
 import { getDefaultTheme, prefersAnimation } from '../utils/theme';
 import { connect } from 'unistore/preact';
@@ -100,6 +102,8 @@ class App extends Component {
             <Settings path="/settings/" />
             <Stats path="/stats/" />
             <About path="/about/" />
+            <Auth path="/auth/:provider" />
+            <AuthCallback path="/auth/callback/:provider" />
             <Highlights path="/highlights/" />
             <Day path="/:year/:month/:day" />
             <Month path="/:year/:month" />

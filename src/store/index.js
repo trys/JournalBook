@@ -4,6 +4,7 @@ const store = {
   settings: {
     theme: '',
     animation: '',
+    storageAdapter: '',
   },
   db: null,
 };
