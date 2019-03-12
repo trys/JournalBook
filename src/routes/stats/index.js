@@ -3,6 +3,9 @@ import { connect } from 'unistore/preact';
 import { Link } from 'preact-router/match';
 import Traverse from '../../components/Traverse';
 import { pluralise } from '../../utils/pluralise';
+import { url } from '../../utils/date';
+
+const today = url();
 
 class Stats extends Component {
   state = {
@@ -102,7 +105,10 @@ class Stats extends Component {
     );
 
     const empty = (
-      <p>There's not quite enough data to get gather stats - keep writing!</p>
+      <p>
+        There's not quite enough data to get gather stats -{' '}
+        <Link href={today}>keep writing</Link>!
+      </p>
     );
 
     const isEmpty = Math.min(totalEntries, uniqueDates, wordCount) === 0;
