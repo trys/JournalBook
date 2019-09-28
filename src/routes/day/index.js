@@ -154,9 +154,12 @@ class Day extends Component {
                 value={answer}
                 placeholder="Start writing..."
                 onInput={({ target }) => {
+                  const { scrollTop } = target;
+
                   window.setTimeout(() => {
                     target.style.height = 'auto';
                     target.style.height = target.scrollHeight + 'px';
+                    target.scrollTop = scrollTop;
                   }, 0);
                   this.updateAnswer(slug, target.value);
                 }}
