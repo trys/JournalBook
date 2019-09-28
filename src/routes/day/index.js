@@ -78,7 +78,7 @@ class Day extends Component {
       this.props.db.delete('highlights', key);
     }
 
-    this.setState({ highlighted: highlighted, clicked: highlighted });
+    this.setState({ highlighted, clicked: highlighted });
   };
 
   updateAnswer = (slug, answer) => {
@@ -95,7 +95,7 @@ class Day extends Component {
     this.setState({ questions });
   };
 
-  render(props, { date, questions, highlighted, clicked }) {
+  render(props, { date, questions, highlighted }) {
     if (date === null) {
       return null;
     }
@@ -153,11 +153,12 @@ class Day extends Component {
                 dir="auto"
                 value={answer}
                 placeholder="Start writing..."
-                onInput={event => {
-                  event.target.style.height = 'auto';
-                  event.target.getBoundingClientRect();
-                  event.target.style.height = event.target.scrollHeight + 'px';
-                  this.updateAnswer(slug, event.target.value);
+                onInput={({ target }) => {
+                  window.setTimeout(() => {
+                    target.style.height = 'auto';
+                    target.style.height = target.scrollHeight + 'px';
+                  }, 0);
+                  this.updateAnswer(slug, target.value);
                 }}
               />
             </div>
