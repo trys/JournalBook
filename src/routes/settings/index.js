@@ -251,6 +251,7 @@ class Settings extends Component {
               <option value="">Default</option>
               <option value="light">Light</option>
               <option value="dark">Dark</option>
+              <option value="rose">Rose</option>
             </select>
           </p>
 

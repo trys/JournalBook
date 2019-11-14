@@ -15,6 +15,7 @@
   --overviewCount: #4451b1;
   --boxShadow: rgba(105, 119, 136, 0.5);
   --defaultQuestions: rgb(205, 219, 236);
+  --toggle: var(--buttonBG);
 }
 
 .header:before {
@@ -567,7 +568,7 @@ textarea {
 }
 
 .toggle input:checked + i {
-  background-color: #5e65ba;
+  background-color: var(--toggle);
 }
 
 .toggle input:checked + i:before {
@@ -698,8 +699,33 @@ textarea {
   --defaultQuestionsShadow: var(--translucentGrey);
   --buttonBG: #3c2a7d;
   --buttonColor: #fff;
+  --toggle: var(--buttonBG);
 }
 
 [data-theme='dark'] select {
   background-image: url('data:image/svg+xml;charset=utf-8;base64,PHN2ZyB3aWR0aD0iMTIiIGhlaWdodD0iOCIgdmlld0JveD0iMCAwIDEyIDgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZD0iTS42NjggMS41MWw0Ljk3NCA0Ljk3NSA0Ljk0OC00Ljk1IiBzdHJva2U9InJnYmEoMjU1LDI1NSwyNTUsMC40KSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L3N2Zz4=');
+}
+
+[data-theme='rose'] {
+  --bg: #fff;
+  --color: #444;
+  --line: #ddd;
+  --heading: #6f1e51;
+  --buttonBG: #ed4c67;
+  --buttonColor: #fff;
+  --lightButtonBG: #f3e1ec;
+  --lightButtonCGolor: inheritColor;
+  --lightBlueButton: #f3e1ec;
+  --headerOne: #c44569;
+  --headerTwo: #cf6a87;
+  --traverse: #b53471;
+  --traverseBG: rgba(50, 50, 50, 0.1);
+  --overviewCount: #ed4c67;
+  --boxShadow: rgba(105, 119, 136, 0.5);
+  --defaultQuestions: #f3e1ec;
+  --toggle: var(--buttonBG);
+}
+
+[data-theme='rose'] img {
+  filter: hue-rotate(55deg) saturate(80%);
 }
