@@ -223,7 +223,7 @@ class Day extends Component {
 
         {trackingQuestions.map(question => (
           <div key={question.slug}>
-            <label for={question.slug} dir="auto">
+            <label for={question.id} dir="auto">
               {question.title}
             </label>
 
@@ -262,20 +262,6 @@ class Day extends Component {
             )}
           </div>
         ))}
-
-        {/* <div class="question">
-          <label for="sleep" dir="auto">
-            How did you sleep?
-          </label>
-          <div class="stars">
-            {[5, 4, 3, 2, 1].map(v => (
-              <div>
-                <input type="checkbox" value={v} id={`star_${v}`} />
-                <label for={`star_${v}`}>{v}</label>
-              </div>
-            ))}
-          </div>
-        </div> */}
       </div>
     );
   }

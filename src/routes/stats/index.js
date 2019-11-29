@@ -4,6 +4,8 @@ import { Link } from 'preact-router/match';
 import Traverse from '../../components/Traverse';
 import { pluralise } from '../../utils/pluralise';
 import { url } from '../../utils/date';
+import { stopWords } from '../../utils/stat';
+import { getTrackingQuestions } from '../../utils/questions';
 
 const today = url();
 
@@ -16,6 +18,7 @@ class Stats extends Component {
     popularWords: [],
     showPopularWords: false,
     showStopWords: false,
+    trackingQuestions: [],
   };
 
   componentDidMount() {
@@ -41,79 +44,13 @@ class Stats extends Component {
 
       const unique = keys.reduce(this.removeDuplicates, []);
 
-      // const dates = unique.map(this.keyToDate);
-
-      const theWords = {};
-      const stopWords = [
-        'i',
-        'a',
-        'and',
-        'the',
-        'in',
-        'of',
-        'to',
-        'then',
-        'they',
-        'was',
-        'for',
-        'with',
-        'it',
-        'we',
-        'on',
-        'an',
-        'but',
-        'at',
-        'had',
-        'so',
-        'went',
-        'up',
-        'some',
-        'got',
-        'my',
-        'be',
-        'that',
-        'this',
-        "i'm",
-        'made',
-        'out',
-        "it's",
-        'is',
-        'did',
-        'me',
-        'too',
-        'how',
-        'off',
-        'as',
-      ];
-
-      // Word count
-      const entries = await this.props.db.getAll('entries');
-      const wordCount = entries.reduce((c, entry) => {
-        const words = entry
-          .split(/[.\s,]+/)
-          .map(x => x.toLowerCase())
-          .filter(Boolean);
-
-        words
-          .filter(x => this.state.showStopWords || !stopWords.includes(x))
-          .forEach(w => (theWords[w] = theWords[w] ? theWords[w] + 1 : 1));
-
-        return c + words.length;
-      }, 0);
-
-      const highestValues = Array.from(
-        new Set(Object.values(theWords).sort((a, b) => b - a))
-      );
-      const popularWords = highestValues.slice(0, 50).map(v => [
-        v,
-        Object.keys(theWords)
-          .filter(k => theWords[k] === v)
-          .join(', '),
-      ]);
-
       // Highlights
       const highlights = await this.props.db.getAll('highlights');
       const totalHighlights = highlights.length;
+
+      const [wordCount, popularWords] = await this.getPopularWords();
+
+      const trackingQuestions = await this.getTrackingStats();
 
       this.setState({
         totalEntries,
@@ -121,10 +58,71 @@ class Stats extends Component {
         wordCount,
         totalHighlights,
         popularWords,
+        trackingQuestions,
       });
     } catch (e) {
       // console.error(e);
     }
+  };
+
+  getTrackingStats = async () => {
+    const questions = await getTrackingQuestions();
+    const answers = await this.props.db.getAll('trackingEntries');
+
+    questions.forEach(question => {
+      question.answers = answers
+        .filter(x => x.questionId === question.id)
+        .filter(x => x.value !== question.default);
+
+      switch (question.settings.calculation) {
+        case 'average':
+          question.stat =
+            Math.round(
+              (question.answers.reduce((c, x) => c + x.value, 0) /
+                question.answers.length) *
+                1000
+            ) / 1000;
+          break;
+        case 'total':
+          question.stat =
+            Math.round(
+              question.answers.reduce((c, x) => c + x.value, 0) * 1000
+            ) / 1000;
+          break;
+      }
+    });
+
+    return questions.filter(x => x.stat !== undefined);
+  };
+
+  getPopularWords = async () => {
+    // Word count
+    const theWords = {};
+    const entries = await this.props.db.getAll('entries');
+    const wordCount = entries.reduce((c, entry) => {
+      const words = entry
+        .split(/[.\s,]+/)
+        .map(x => x.toLowerCase())
+        .filter(Boolean);
+
+      words
+        .filter(x => this.state.showStopWords || !stopWords.includes(x))
+        .forEach(w => (theWords[w] = theWords[w] ? theWords[w] + 1 : 1));
+
+      return c + words.length;
+    }, 0);
+
+    const highestValues = Array.from(
+      new Set(Object.values(theWords).sort((a, b) => b - a))
+    );
+    const popularWords = highestValues.slice(0, 50).map(v => [
+      v,
+      Object.keys(theWords)
+        .filter(k => theWords[k] === v)
+        .join(', '),
+    ]);
+
+    return [wordCount, popularWords];
   };
 
   removeDuplicates(c, date) {
@@ -151,6 +149,7 @@ class Stats extends Component {
       popularWords,
       showPopularWords,
       showStopWords,
+      trackingQuestions,
     }
   ) {
     const stats = (
@@ -175,6 +174,8 @@ class Stats extends Component {
             <Link href="/highlights/">here</Link>
           </p>
         ) : null}
+
+        <p>Well done! 👏</p>
 
         {showPopularWords && popularWords.length ? (
           <div>
@@ -212,7 +213,20 @@ class Stats extends Component {
             Show popular words
           </button>
         )}
-        <p>Well done! 👏</p>
+
+        {trackingQuestions.length ? (
+          <div>
+            <hr />
+            <h2>Tracking Statistics</h2>
+
+            {trackingQuestions.map(question => (
+              <p>
+                <strong>{question.title}</strong>: {question.stat}
+                <small> ({question.settings.calculation})</small>
+              </p>
+            ))}
+          </div>
+        ) : null}
       </div>
     );
 
@@ -227,7 +241,7 @@ class Stats extends Component {
 
     return (
       <div class="wrap lift-children">
-        <Traverse title="Stats" className="traverse--center" />
+        <Traverse title="Statistics" className="traverse--center" />
         <div className="pt20 center">{isEmpty ? empty : stats}</div>
       </div>
     );
