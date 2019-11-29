@@ -1,6 +1,6 @@
 import { h } from 'preact';
 
-const AddQuestion = ({ addQuestion, label = 'Write your own questions' }) => (
+const AddQuestion = ({ addQuestion, label = 'Write your own question' }) => (
   <form onSubmit={addQuestion} class="add-question">
     <div>
       <label for="add-question">{label}</label>

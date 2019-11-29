@@ -7,6 +7,7 @@ import { ScaryButton } from '../../components/ScaryButton';
 import { getDefaultTheme, prefersAnimation } from '../../utils/theme';
 import { actions } from '../../store/actions';
 import { connect } from 'unistore/preact';
+import { getTrackingQuestions } from '../../utils/questions';
 
 class Settings extends Component {
   state = {
@@ -14,16 +15,19 @@ class Settings extends Component {
     exporting: 0,
     importing: false,
     files: [],
+    trackingQuestions: [],
   };
 
-  async componentDidMount() {
+  async componentWillMount() {
     const keys = await this.props.db.keys('questions');
     const questions = await Promise.all(
       keys.map(x => this.props.db.get('questions', x))
     );
     questions.sort((a, b) => a.createdAt - b.createdAt);
 
-    this.setState({ questions });
+    const trackingQuestions = await getTrackingQuestions();
+
+    this.setState({ questions, trackingQuestions });
   }
 
   updateSetting = key => {
@@ -159,9 +163,7 @@ class Settings extends Component {
       );
 
       await Promise.all(
-        highlights.map(async key => {
-          return this.props.db.set('highlights', key, true);
-        })
+        highlights.map(async key => this.props.db.set('highlights', key, true))
       );
 
       localStorage.setItem('journalbook_onboarded', true);
@@ -182,7 +184,10 @@ class Settings extends Component {
     window.location.href = '/';
   };
 
-  render({ settings = {} }, { questions, exporting, files, importing }) {
+  render(
+    { settings = {} },
+    { questions, exporting, files, importing, trackingQuestions }
+  ) {
     const theme = settings.theme || getDefaultTheme(settings);
     const animation = settings.animation || prefersAnimation(settings);
 
@@ -195,6 +200,26 @@ class Settings extends Component {
         />
 
         <AddQuestion addQuestion={this.addQuestion} />
+
+        <hr />
+
+        <div>
+          <h2 class="center">Your tracking questions</h2>
+          {trackingQuestions.map(question => (
+            <div>
+              <p>
+                <label for={`${question.id}_title`}>Question</label>
+                <input
+                  id={`${question.id}_title`}
+                  type="text"
+                  dir="auto"
+                  value={question.title}
+                />
+              </p>
+              <p>{question.type}</p>
+            </div>
+          ))}
+        </div>
 
         <div>
           <hr />

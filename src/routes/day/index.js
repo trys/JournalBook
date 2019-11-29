@@ -1,13 +1,18 @@
 import { h, Component } from 'preact';
 import { Link } from 'preact-router/match';
-import { ymd, url, format, compare } from '../../utils/date';
+import { ymd, url, format } from '../../utils/date';
+import { getTrackingQuestions } from '../../utils/questions';
 import Traverse from '../../components/Traverse';
 import { connect } from 'unistore/preact';
+import { QuestionTextarea } from '../../components/QuestionTextarea';
+import { StarPicker } from '../../components/StarPicker';
+import { NumberPicker } from '../../components/NumberPicker';
 
 class Day extends Component {
   state = {
     date: null,
     questions: null,
+    trackingQuestions: [],
     highlighted: false,
     clicked: false,
     key: '',
@@ -26,15 +31,13 @@ class Day extends Component {
     const date = new Date(year, Number(month) - 1, day);
     const key = ymd(date);
 
-    if (date.toString() === 'Invalid Date' || compare(date, new Date()) === 1) {
+    if (date.toString() === 'Invalid Date') {
       window.location.href = url();
       return;
     }
 
     const keys = await db.keys('questions');
-    const questions = await Promise.all(
-      keys.map(x => db.get('questions', x))
-    ).then(results => results.filter(x => x.status === 'live'));
+    const questions = await Promise.all(keys.map(x => db.get('questions', x)));
 
     questions.sort((a, b) => a.createdAt - b.createdAt);
 
@@ -43,14 +46,27 @@ class Day extends Component {
     );
     questions.forEach((question, index) => {
       question.answer = answers[index] || '';
+      question.visible = !!answers[index] || question.status === 'live';
     });
 
     const highlighted = await db.get('highlights', key);
+
+    const trackingQuestions = await getTrackingQuestions();
+    const trackingAnswers = await Promise.all(
+      trackingQuestions.map(({ id }) =>
+        db.get('trackingEntries', `${key}_${id}`)
+      )
+    ).then(results => results.filter(Boolean));
+
+    trackingQuestions.forEach(question => {
+      question.answer = trackingAnswers.find(x => x.questionId === question.id);
+    });
 
     this.setState(
       {
         date,
         questions,
+        trackingQuestions,
         key,
         highlighted: !!highlighted,
         clicked: false,
@@ -78,7 +94,7 @@ class Day extends Component {
       this.props.db.delete('highlights', key);
     }
 
-    this.setState({ highlighted: highlighted, clicked: highlighted });
+    this.setState({ highlighted, clicked: highlighted });
   };
 
   updateAnswer = (slug, answer) => {
@@ -95,27 +111,71 @@ class Day extends Component {
     this.setState({ questions });
   };
 
-  render(props, { date, questions, highlighted, clicked }) {
+  updateTrackingAnswer = (questionId, value) => {
+    const { key } = this.state;
+    const trackingQuestions = [...this.state.trackingQuestions];
+    const question = trackingQuestions.find(x => x.id === questionId);
+    if (!question) {
+      return;
+    }
+
+    const id = `${key}_${questionId}`;
+    const answer = question.answer || {
+      id,
+      questionId,
+      createdAt: Date.now(),
+      dateString: key,
+      value,
+      notes: '',
+    };
+
+    question.answer = { ...answer, value };
+    this.props.db.set('trackingEntries', id, question.answer);
+
+    this.setState({ trackingQuestions });
+  };
+
+  updateTrackingNotes = (questionId, notes) => {
+    const { key } = this.state;
+    const trackingQuestions = [...this.state.trackingQuestions];
+    const question = trackingQuestions.find(x => x.id === questionId);
+    if (!question) {
+      return;
+    }
+
+    const id = `${key}_${questionId}`;
+    const answer = question.answer || {
+      id,
+      questionId,
+      createdAt: Date.now(),
+      dateString: key,
+      value: question.settings.default || null,
+      notes,
+    };
+
+    question.answer = { ...answer, notes };
+    this.props.db.set('trackingEntries', id, question.answer);
+
+    this.setState({ trackingQuestions });
+  };
+
+  render(props, { date, questions, highlighted, trackingQuestions }) {
     if (date === null) {
       return null;
     }
 
-    const today = new Date();
     const yesterday = new Date(date);
     yesterday.setDate(yesterday.getDate() - 1);
 
     const tomorrow = new Date(date);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
-    const isToday = ymd(today) === ymd(date);
-
     return (
       <div class="wrap lift-children">
         <Traverse
           title={format(date)}
           lastLink={url(yesterday)}
-          nextLink={isToday ? '' : url(tomorrow)}
-          disableNext={isToday}
+          nextLink={url(tomorrow)}
           actions={
             <button
               type="button"
@@ -143,25 +203,16 @@ class Day extends Component {
         />
 
         {questions === null ? null : questions.length ? (
-          questions.map(({ slug, text, answer = '' }, index) => (
-            <div key={slug} class="question">
-              <label for={slug} dir="auto">
-                {text}
-              </label>
-              <textarea
+          questions
+            .filter(x => x.visible)
+            .map(({ slug, text, answer = '' }) => (
+              <QuestionTextarea
                 id={slug}
-                dir="auto"
+                label={text}
                 value={answer}
-                placeholder="Start writing..."
-                onInput={event => {
-                  event.target.style.height = 'auto';
-                  event.target.getBoundingClientRect();
-                  event.target.style.height = event.target.scrollHeight + 'px';
-                  this.updateAnswer(slug, event.target.value);
-                }}
+                onInput={v => this.updateAnswer(slug, v)}
               />
-            </div>
-          ))
+            ))
         ) : (
           <div class="center lift mt40">
             <Link href="/get-started/" class="button">
@@ -169,6 +220,62 @@ class Day extends Component {
             </Link>
           </div>
         )}
+
+        {trackingQuestions.map(question => (
+          <div key={question.slug}>
+            <label for={question.slug} dir="auto">
+              {question.title}
+            </label>
+
+            {question.settings.type === 'star' ? (
+              <StarPicker
+                id={question.id}
+                value={
+                  question.answer
+                    ? question.answer.value
+                    : question.settings.default || null
+                }
+                onChange={v => this.updateTrackingAnswer(question.id, v)}
+              />
+            ) : null}
+
+            {question.settings.type === 'number' ? (
+              <NumberPicker
+                id={question.id}
+                value={
+                  question.answer
+                    ? question.answer.value
+                    : question.settings.default || null
+                }
+                settings={question.settings}
+                onChange={v => this.updateTrackingAnswer(question.id, v)}
+              />
+            ) : null}
+
+            {question.notes && (
+              <QuestionTextarea
+                id={`${question.id}_notes`}
+                label={'Additional notes'}
+                value={question.answer ? question.answer.notes || '' : ''}
+                onInput={v => this.updateTrackingNotes(question.id, v)}
+              />
+            )}
+          </div>
+        ))}
+
+        {/* <div class="question">
+          <label for="sleep" dir="auto">
+            How did you sleep?
+          </label>
+          <div class="stars">
+            {[5, 4, 3, 2, 1].map(v => (
+              <div>
+                <input type="checkbox" value={v} id={`star_${v}`} />
+                <label for={`star_${v}`}>{v}</label>
+              </div>
+            ))}
+          </div>
+        </div> */}
       </div>
     );
   }

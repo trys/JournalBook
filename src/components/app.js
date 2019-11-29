@@ -29,7 +29,7 @@ class App extends Component {
 
   async componentDidMount() {
     try {
-      const version = 4;
+      const version = 5;
       const dbPromise = openDb('entries-store', version, udb => {
         switch (udb.oldVersion) {
           case 0:
@@ -46,6 +46,10 @@ class App extends Component {
                 ? 'off'
                 : '',
             });
+          case 4: {
+            udb.createObjectStore('trackingQuestions');
+            udb.createObjectStore('trackingEntries');
+          }
         }
       });
 
