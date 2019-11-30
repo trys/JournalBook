@@ -3,7 +3,7 @@ import { connect } from 'unistore/preact';
 import { Link } from 'preact-router/match';
 import Traverse from '../../components/Traverse';
 import { pluralise } from '../../utils/pluralise';
-import { url } from '../../utils/date';
+import { url, parseToUrl } from '../../utils/date';
 import { stopWords } from '../../utils/stat';
 import { getTrackingQuestions } from '../../utils/questions';
 
@@ -15,6 +15,7 @@ class Stats extends Component {
     uniqueDates: 0,
     wordCount: 0,
     totalHighlights: 0,
+    totalTrackingEntries: 0,
     popularWords: [],
     showPopularWords: false,
     showStopWords: false,
@@ -50,7 +51,10 @@ class Stats extends Component {
 
       const [wordCount, popularWords] = await this.getPopularWords();
 
-      const trackingQuestions = await this.getTrackingStats();
+      const [
+        trackingQuestions,
+        totalTrackingEntries,
+      ] = await this.getTrackingStats();
 
       this.setState({
         totalEntries,
@@ -59,6 +63,7 @@ class Stats extends Component {
         totalHighlights,
         popularWords,
         trackingQuestions,
+        totalTrackingEntries,
       });
     } catch (e) {
       // console.error(e);
@@ -76,6 +81,7 @@ class Stats extends Component {
 
       switch (question.settings.calculation) {
         case 'average':
+          question.instances = question.answers;
           question.stat =
             Math.round(
               (question.answers.reduce((c, x) => c + x.value, 0) /
@@ -89,17 +95,27 @@ class Stats extends Component {
               question.answers.reduce((c, x) => c + x.value, 0) * 1000
             ) / 1000;
           break;
+        case 'count':
+          question.instances = question.answers.filter(x => !!x.value[0]);
+          question.stat = question.instances.length;
+          break;
       }
     });
 
-    return questions.filter(x => x.stat !== undefined);
+    return [questions.filter(x => x.stat !== undefined), answers.length];
   };
 
   getPopularWords = async () => {
     // Word count
     const theWords = {};
     const entries = await this.props.db.getAll('entries');
-    const wordCount = entries.reduce((c, entry) => {
+    const noteEntries = await this.props.db
+      .getAll('trackingEntries')
+      .then(results => {
+        return results.map(x => x.notes || '');
+      });
+
+    const wordCount = [...entries, ...noteEntries].reduce((c, entry) => {
       const words = entry
         .split(/[.\s,]+/)
         .map(x => x.toLowerCase())
@@ -129,16 +145,6 @@ class Stats extends Component {
     return c.indexOf(date) === -1 ? [...c, date] : c;
   }
 
-  keyToDate(date) {
-    const d = date.toString();
-    const dateString = `${d.substring(0, 4)}-${d.substring(4, 6)}-${d.substring(
-      6,
-      8
-    )}`;
-
-    return new Date(dateString);
-  }
-
   render(
     {},
     {
@@ -146,6 +152,7 @@ class Stats extends Component {
       uniqueDates,
       wordCount,
       totalHighlights,
+      totalTrackingEntries,
       popularWords,
       showPopularWords,
       showStopWords,
@@ -214,15 +221,34 @@ class Stats extends Component {
           </button>
         )}
 
-        {trackingQuestions.length ? (
+        {totalTrackingEntries ? (
           <div>
             <hr />
             <h2>Tracking Statistics</h2>
+
+            <p>
+              You've tracked {totalTrackingEntries}{' '}
+              {pluralise('thing', totalTrackingEntries)} on JournalBook.
+              {trackingQuestions.length ? (
+                <span> Here's a selection of statistics:</span>
+              ) : null}
+            </p>
 
             {trackingQuestions.map(question => (
               <p>
                 <strong>{question.title}</strong>: {question.stat}
                 <small> ({question.settings.calculation})</small>
+                {question.instances && question.instances.length ? (
+                  <ul>
+                    {question.instances.map(answer => (
+                      <li>
+                        <Link href={parseToUrl(answer.dateString)}>
+                          {answer.dateString}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
               </p>
             ))}
           </div>

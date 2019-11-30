@@ -7,6 +7,9 @@ import { connect } from 'unistore/preact';
 import { QuestionTextarea } from '../../components/QuestionTextarea';
 import { StarPicker } from '../../components/StarPicker';
 import { NumberPicker } from '../../components/NumberPicker';
+import { SelectPicker } from '../../components/SelectPicker';
+import { CheckboxPicker } from '../../components/CheckboxPicker';
+import { TogglePicker } from '../../components/TogglePicker/Index';
 
 class Day extends Component {
   state = {
@@ -135,6 +138,46 @@ class Day extends Component {
     this.setState({ trackingQuestions });
   };
 
+  /**
+   * TODO: REFACTOR YOU SHOULD BE ASLEEP
+   */
+  toggleTrackingOption = (questionId, value) => {
+    const { key } = this.state;
+    const trackingQuestions = [...this.state.trackingQuestions];
+    const question = trackingQuestions.find(x => x.id === questionId);
+    if (!question) {
+      return;
+    }
+
+    const id = `${key}_${questionId}`;
+    let val = [];
+
+    const answer = question.answer || {
+      id,
+      questionId,
+      createdAt: Date.now(),
+      dateString: key,
+      value: question.settings.default || [],
+      notes: '',
+    };
+
+    if (question.settings.type === 'checkbox') {
+      const included = answer.value.includes(value);
+      if (included) {
+        val = answer.value.filter(x => x !== value);
+      } else {
+        val = [...answer.value, ...value];
+      }
+    } else {
+      val = [value];
+    }
+
+    question.answer = { ...answer, value: val };
+    this.props.db.set('trackingEntries', id, question.answer);
+
+    this.setState({ trackingQuestions });
+  };
+
   updateTrackingNotes = (questionId, notes) => {
     const { key } = this.state;
     const trackingQuestions = [...this.state.trackingQuestions];
@@ -202,7 +245,7 @@ class Day extends Component {
           }
         />
 
-        {questions === null ? null : questions.length ? (
+        {/* {questions === null ? null : questions.length ? (
           questions
             .filter(x => x.visible)
             .map(({ slug, text, answer = '' }) => (
@@ -219,7 +262,7 @@ class Day extends Component {
               Write your first question
             </Link>
           </div>
-        )}
+        )} */}
 
         {trackingQuestions.map(question => (
           <div key={question.slug}>
@@ -227,13 +270,53 @@ class Day extends Component {
               {question.title}
             </label>
 
+            {question.settings.type === 'checkbox' ||
+            question.settings.type === 'radio' ? (
+              <CheckboxPicker
+                id={question.id}
+                type={question.settings.type}
+                value={
+                  question.answer
+                    ? question.answer.value
+                    : question.settings.default
+                }
+                options={question.settings.options}
+                onChange={v => this.toggleTrackingOption(question.id, v)}
+              />
+            ) : null}
+
+            {question.settings.type === 'lightswitch' ? (
+              <TogglePicker
+                id={question.id}
+                value={
+                  question.answer
+                    ? question.answer.value
+                    : question.settings.default
+                }
+                onChange={v => this.updateTrackingAnswer(question.id, v)}
+              />
+            ) : null}
+
+            {question.settings.type === 'select' ? (
+              <SelectPicker
+                id={question.id}
+                value={
+                  question.answer
+                    ? question.answer.value[0] || question.settings.default
+                    : question.settings.default
+                }
+                options={question.settings.options}
+                onChange={v => this.toggleTrackingOption(question.id, v)}
+              />
+            ) : null}
+
             {question.settings.type === 'star' ? (
               <StarPicker
                 id={question.id}
                 value={
                   question.answer
                     ? question.answer.value
-                    : question.settings.default || null
+                    : question.settings.default || [null]
                 }
                 onChange={v => this.updateTrackingAnswer(question.id, v)}
               />
@@ -245,7 +328,7 @@ class Day extends Component {
                 value={
                   question.answer
                     ? question.answer.value
-                    : question.settings.default || null
+                    : question.settings.default || [null]
                 }
                 settings={question.settings}
                 onChange={v => this.updateTrackingAnswer(question.id, v)}
@@ -255,7 +338,9 @@ class Day extends Component {
             {question.notes && (
               <QuestionTextarea
                 id={`${question.id}_notes`}
-                label={'Additional notes'}
+                label={
+                  question.notes === true ? 'Additional notes' : question.notes
+                }
                 value={question.answer ? question.answer.notes || '' : ''}
                 onInput={v => this.updateTrackingNotes(question.id, v)}
               />

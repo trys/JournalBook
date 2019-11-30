@@ -84,6 +84,10 @@ export const parse = date => {
   return new Date(year, month, day);
 };
 
+export const parseToUrl = date => {
+  return url(parse(date));
+};
+
 export const format = date => {
   return (
     <span>
