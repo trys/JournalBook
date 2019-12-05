@@ -47,7 +47,7 @@ class Highlights extends Component {
                 {years[year].map(date => {
                   return (
                     <li key={ymd(date)}>
-                      <Link href={url(date)} class="button">
+                      <Link href={url(date, 'highlights')} class="button">
                         {shortDate(date)}
                       </Link>
                     </li>

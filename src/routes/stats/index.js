@@ -5,7 +5,7 @@ import Traverse from '../../components/Traverse';
 import { pluralise } from '../../utils/pluralise';
 import { url, parseToUrl } from '../../utils/date';
 import { stopWords } from '../../utils/stat';
-import { getTrackingQuestions } from '../../utils/questions';
+import { getTrackingQuestions, isAnswerValid } from '../../utils/questions';
 
 const today = url();
 
@@ -34,10 +34,6 @@ class Stats extends Component {
     try {
       const keysData = await this.props.db.keys('entries');
       const totalEntries = keysData.length;
-
-      if (!totalEntries) {
-        throw new Error();
-      }
 
       // Prepare the keys
       const keys = keysData.map(key => Number(key.split('_').shift()));
@@ -71,7 +67,7 @@ class Stats extends Component {
   };
 
   getTrackingStats = async () => {
-    const questions = await getTrackingQuestions();
+    const questions = await getTrackingQuestions(this.props.db);
     const answers = await this.props.db.getAll('trackingEntries');
 
     questions.forEach(question => {
@@ -96,9 +92,13 @@ class Stats extends Component {
             ) / 1000;
           break;
         case 'count':
-          question.instances = question.answers.filter(x => !!x.value[0]);
+          question.instances = question.answers.filter(isAnswerValid);
           question.stat = question.instances.length;
           break;
+      }
+
+      if (isNaN(question.stat)) {
+        question.stat = undefined;
       }
     });
 
@@ -161,18 +161,20 @@ class Stats extends Component {
   ) {
     const stats = (
       <div>
-        <p>
-          You've written <strong>{wordCount}</strong>{' '}
-          {pluralise('word', wordCount)} in{' '}
-          <strong>
-            {totalEntries} {pluralise('entry', totalEntries, 'entries')}
-          </strong>{' '}
-          over{' '}
-          <strong>
-            {uniqueDates} {pluralise('day', uniqueDates)}
-          </strong>
-          !
-        </p>
+        {totalHighlights ? (
+          <p>
+            You've written <strong>{wordCount}</strong>{' '}
+            {pluralise('word', wordCount)} in{' '}
+            <strong>
+              {totalEntries} {pluralise('entry', totalEntries, 'entries')}
+            </strong>{' '}
+            over{' '}
+            <strong>
+              {uniqueDates} {pluralise('day', uniqueDates)}
+            </strong>
+            !
+          </p>
+        ) : null}
         {totalHighlights ? (
           <p>
             You've also highlighted <strong>{totalHighlights}</strong>{' '}
@@ -182,7 +184,7 @@ class Stats extends Component {
           </p>
         ) : null}
 
-        <p>Well done! 👏</p>
+        {totalHighlights || totalEntries ? <p>Well done! 👏</p> : null}
 
         {showPopularWords && popularWords.length ? (
           <div>
@@ -211,7 +213,7 @@ class Stats extends Component {
               </button>
             ) : null}
           </div>
-        ) : (
+        ) : wordCount ? (
           <button
             type="button"
             class="button button--grey"
@@ -219,37 +221,32 @@ class Stats extends Component {
           >
             Show popular words
           </button>
-        )}
+        ) : null}
 
         {totalTrackingEntries ? (
-          <div>
+          <div class="wrap wrap--thin mb40">
             <hr />
-            <h2>Tracking Statistics</h2>
+            <h2>Personal Statistics</h2>
 
             <p>
-              You've tracked {totalTrackingEntries}{' '}
-              {pluralise('thing', totalTrackingEntries)} on JournalBook.
+              You've tracked {totalTrackingEntries} personal{' '}
+              {pluralise('statistic', totalTrackingEntries)} on JournalBook.
               {trackingQuestions.length ? (
-                <span> Here's a selection of statistics:</span>
+                <span> Here's a selection:</span>
               ) : null}
             </p>
 
             {trackingQuestions.map(question => (
-              <p>
-                <strong>{question.title}</strong>: {question.stat}
-                <small> ({question.settings.calculation})</small>
+              <div class="tracking-summary">
+                <strong>{question.title}</strong>
+                <span class="tracking-summary__stat">
+                  <output>{question.stat}</output>
+                  <small> ({question.settings.calculation})</small>
+                </span>
                 {question.instances && question.instances.length ? (
-                  <ul>
-                    {question.instances.map(answer => (
-                      <li>
-                        <Link href={parseToUrl(answer.dateString)}>
-                          {answer.dateString}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
+                  <Link href={`/entries/${question.id}`}>See all entries</Link>
                 ) : null}
-              </p>
+              </div>
             ))}
           </div>
         ) : null}
@@ -263,7 +260,9 @@ class Stats extends Component {
       </p>
     );
 
-    const isEmpty = Math.min(totalEntries, uniqueDates, wordCount) === 0;
+    const isEmpty =
+      Math.min(totalEntries, uniqueDates, wordCount) === 0 &&
+      !totalTrackingEntries;
 
     return (
       <div class="wrap lift-children">

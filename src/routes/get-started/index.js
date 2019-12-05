@@ -16,10 +16,12 @@ class GetStarted extends Component {
       'What are you thankful for?',
       'What would you change about today?',
       'Notes and musings',
+      'What did you work on yesterday?',
+      'What are you planning on working on today?',
     ],
   };
 
-  async componentDidMount() {
+  async componentWillMount() {
     const keys = await this.props.db.keys('questions');
     const questions = await Promise.all(
       keys.map(x => this.props.db.get('questions', x))
@@ -107,12 +109,21 @@ class GetStarted extends Component {
         <AddQuestion
           addQuestion={this.addQuestion}
           label="Or write your own!"
+          plus
         />
 
         <div className="mb40">
-          <a onClick={this.onboard} href="/settings">
+          <a
+            class="button button--grey mr20"
+            onClick={this.onboard}
+            href="/settings"
+          >
             Import an existing JournalBook
           </a>
+
+          <Link class="button button--grey" href="/add-statistic-question">
+            Add a personal statistic to track
+          </Link>
         </div>
 
         <QuestionList

@@ -17,7 +17,7 @@ const Home = () =>
         Don't forget to <Link href="/settings/">backup</Link> once in a while!
       </p>
       <p>
-        <Link href="/stats/">Stats</Link> - {''}
+        <Link href="/stats/">Statistics</Link> - {''}
         <Link href="/about/">About JournalBook</Link>
       </p>
     </div>

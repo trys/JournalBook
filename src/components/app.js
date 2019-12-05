@@ -12,8 +12,11 @@ import Settings from '../routes/settings';
 import Stats from '../routes/stats';
 import GetStarted from '../routes/get-started';
 import Highlights from '../routes/highlights';
+import Entries from '../routes/entries';
 import About from '../routes/about';
 import NotFound from '../routes/not-found';
+import AddJournalQuestion from '../routes/add-journal-question';
+import AddStatisticQuestion from '../routes/add-statistic-question';
 import { getDefaultTheme, prefersAnimation } from '../utils/theme';
 import { connect } from 'unistore/preact';
 import { actions } from '../store/actions';
@@ -104,8 +107,11 @@ class App extends Component {
             <Settings path="/settings/" />
             <Stats path="/stats/" />
             <About path="/about/" />
+            <AddJournalQuestion path="/add-journal-question/" />
+            <AddStatisticQuestion path="/add-statistic-question/" />
             <Highlights path="/highlights/" />
-            <Day path="/:year/:month/:day" />
+            <Entries path="/entries/:questionId" />
+            <Day path="/:year/:month/:day/:set?" />
             <Month path="/:year/:month" />
             <Year path="/:year" />
             <NotFound default />

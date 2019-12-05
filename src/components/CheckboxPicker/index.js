@@ -12,6 +12,7 @@ const CheckboxPicker = ({
       <div class="c-checkbox" key={option}>
         <input
           id={`${id}_${option}`}
+          class="screen-reader-only"
           type={type}
           checked={value.includes(option)}
           onChange={() => onChange(option)}

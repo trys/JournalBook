@@ -8,6 +8,8 @@ import { getDefaultTheme, prefersAnimation } from '../../utils/theme';
 import { actions } from '../../store/actions';
 import { connect } from 'unistore/preact';
 import { getTrackingQuestions } from '../../utils/questions';
+import { TrackingQuestionList } from '../../components/TrackingQuestionList';
+import { Link } from 'preact-router';
 
 class Settings extends Component {
   state = {
@@ -25,7 +27,7 @@ class Settings extends Component {
     );
     questions.sort((a, b) => a.createdAt - b.createdAt);
 
-    const trackingQuestions = await getTrackingQuestions();
+    const trackingQuestions = await getTrackingQuestions(this.props.db);
 
     this.setState({ questions, trackingQuestions });
   }
@@ -51,6 +53,48 @@ class Settings extends Component {
 
   updateQuestionStatus = (slug, value) => {
     this.updateQuestion(slug, value, 'status');
+  };
+
+  updateTrackingQuestion = (
+    id,
+    value,
+    attribute = 'text',
+    settings = false
+  ) => {
+    const trackingQuestions = [...this.state.trackingQuestions];
+    const question = trackingQuestions.find(x => x.id === id);
+
+    if (!question) {
+      return;
+    }
+
+    if (settings) {
+      question.settings[attribute] = value;
+    } else {
+      question[attribute] = value;
+    }
+    this.props.db.set('trackingQuestions', id, question);
+
+    this.setState({ trackingQuestions });
+  };
+
+  updateTrackingOption = (id, value, index, remove = false) => {
+    const trackingQuestions = [...this.state.trackingQuestions];
+    const question = trackingQuestions.find(x => x.id === id);
+
+    if (!question) {
+      return;
+    }
+
+    if (remove) {
+      question.settings.options.splice(index, 1);
+    } else {
+      question.settings.options[index] = value;
+    }
+
+    this.props.db.set('trackingQuestions', id, question);
+
+    this.setState({ trackingQuestions });
   };
 
   addQuestion = async event => {
@@ -79,14 +123,27 @@ class Settings extends Component {
       const entries = await this.props.db.getObject('entries');
       const highlights = await this.props.db.keys('highlights');
       const settings = await this.props.db.getObject('settings');
+      const trackingEntries = await this.props.db.getObject('trackingEntries');
+      const trackingQuestions = await this.props.db.getObject(
+        'trackingQuestions'
+      );
 
-      return { questions, entries, highlights, settings };
+      return {
+        questions,
+        entries,
+        highlights,
+        settings,
+        trackingEntries,
+        trackingQuestions,
+      };
     } catch (e) {
       return {
         questions: {},
         entries: {},
         highlights: [],
         settings: {},
+        trackingEntries: {},
+        trackingQuestions: {},
       };
     }
   };
@@ -127,9 +184,14 @@ class Settings extends Component {
     this.setState({ importing: true });
 
     reader.onload = (() => async e => {
-      const { entries, questions, highlights = [], settings = {} } = JSON.parse(
-        e.target.result
-      );
+      const {
+        entries,
+        questions,
+        highlights = [],
+        settings = {},
+        trackingQuestions = {},
+        trackingEntries = {},
+      } = JSON.parse(e.target.result);
       if (!entries || !questions || !Array.isArray(highlights)) {
         return;
       }
@@ -148,6 +210,34 @@ class Settings extends Component {
           const current = await this.props.db.get('entries', key);
           if (!current) {
             return this.props.db.set('entries', key, entries[key]);
+          }
+        })
+      );
+
+      const trackingQuestionKeys = Object.keys(trackingQuestions);
+      await Promise.all(
+        trackingQuestionKeys.map(async key => {
+          const current = await this.props.db.get('trackingQuestions', key);
+          if (!current) {
+            return this.props.db.set(
+              'trackingQuestions',
+              key,
+              trackingQuestions[key]
+            );
+          }
+        })
+      );
+
+      const trackingEntryKeys = Object.keys(trackingEntries);
+      await Promise.all(
+        trackingEntryKeys.map(async key => {
+          const current = await this.props.db.get('trackingEntries', key);
+          if (!current) {
+            return this.props.db.set(
+              'trackingEntries',
+              key,
+              trackingEntries[key]
+            );
           }
         })
       );
@@ -180,7 +270,11 @@ class Settings extends Component {
     await this.props.db.clear('questions');
     await this.props.db.clear('highlights');
     await this.props.db.clear('highlights');
+    await this.props.db.clear('settings');
+    await this.props.db.clear('trackingEntries');
+    await this.props.db.clear('trackingQuestions');
     localStorage.removeItem('journalbook_onboarded');
+    localStorage.removeItem('journalbook_dates_migrated');
     window.location.href = '/';
   };
 
@@ -193,37 +287,34 @@ class Settings extends Component {
 
     return (
       <div class="wrap lift-children">
-        <QuestionList
-          questions={questions}
-          updateQuestion={this.updateQuestion}
-          updateQuestionStatus={this.updateQuestionStatus}
-        />
-
-        <AddQuestion addQuestion={this.addQuestion} />
-
-        <hr />
-
         <div>
-          <h2 class="center">Your tracking questions</h2>
-          {trackingQuestions.map(question => (
-            <div>
-              <p>
-                <label for={`${question.id}_title`}>Question</label>
-                <input
-                  id={`${question.id}_title`}
-                  type="text"
-                  dir="auto"
-                  value={question.title}
-                />
-              </p>
-              <p>{question.type}</p>
-            </div>
-          ))}
+          <h2 class="mb20">Your journaling questions</h2>
+          <QuestionList
+            questions={questions}
+            updateQuestion={this.updateQuestion}
+            updateQuestionStatus={this.updateQuestionStatus}
+          />
+          <Link class="button button--grey" href="/add-journal-question/">
+            Add {questions.length ? 'another' : 'a'} question
+          </Link>
+
+          <hr />
         </div>
 
         <div>
+          <h2 class="mb20">Your personal statistics</h2>
+          <TrackingQuestionList
+            trackingQuestions={trackingQuestions}
+            updateTrackingQuestion={this.updateTrackingQuestion}
+            updateTrackingOption={this.updateTrackingOption}
+          />
+          <Link class="button button--grey" href="/add-statistic-question/">
+            Add {trackingQuestions.length ? 'another' : 'a'} question
+          </Link>
           <hr />
+        </div>
 
+        <div>
           <h2>Manage your data</h2>
 
           {exporting === 2 && files.length ? (
@@ -262,10 +353,10 @@ class Settings extends Component {
           </label>
 
           <ScaryButton onClick={this.deleteData}>Delete your data</ScaryButton>
+          <hr />
         </div>
 
         <div className="mb40">
-          <hr />
           <p>
             <label for="theme">Theme</label>
             <select
