@@ -1,11 +1,9 @@
 import { h } from 'preact';
 import { Link } from 'preact-router/match';
-import { url } from '../../utils/date';
 
 const NotFound = () => (
-  <div class="wrap center home lift-children">
-    <h1>About JournalBook</h1>
-    <img src="/assets/images/study.svg" class="home-image" alt="" />
+  <div class="wrap wrap--thin lift-children">
+    <h1 class="mb20">About JournalBook</h1>
     <div>
       <p>JournalBook is a private, offline-first personal journal.</p>
       <p>
@@ -26,7 +24,12 @@ const NotFound = () => (
         to do that from time to time!.
       </p>
       <p>
-        It's quick, has right to left support, and is developed{' '}
+        As well as traditional written entries, you can use JournalBook to track
+        sleep, medicines, anxiety, exercise, habits, or just about anything else
+        you fancy.
+      </p>
+      <p>
+        It's quick and is developed{' '}
         <a href="https://github.com/trys/JournalBook">in the open</a>. You can
         even add it to your homescreen as an app.
       </p>

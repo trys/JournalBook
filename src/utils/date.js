@@ -20,10 +20,10 @@ export const compare = (a, b) => {
 
 export const double = n => (n < 9 ? `0${n}` : n);
 
-export const url = (date = new Date()) =>
+export const url = (date = new Date(), suffix = '') =>
   `/${date.getFullYear()}/${double(date.getMonth() + 1)}/${double(
     date.getDate()
-  )}/`;
+  )}/${suffix ? `${suffix}/` : ''}`;
 
 export const pad = n => (n < 10 ? '0' : '') + n;
 
@@ -82,6 +82,10 @@ export const parse = date => {
   const month = Number(date.substring(4, 6)) - 1;
   const day = Number(date.substring(6, 8));
   return new Date(year, month, day);
+};
+
+export const parseToUrl = (date, suffix = '') => {
+  return url(parse(date), suffix);
 };
 
 export const format = date => {

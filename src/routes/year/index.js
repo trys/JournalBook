@@ -25,7 +25,9 @@ class Year extends Component {
       return;
     }
 
-    const dates = await this.props.db.keys('entries');
+    let dates = await this.props.db.keys('entries');
+    const trackingEntries = await this.props.db.keys('trackingEntries');
+    dates = [...dates, ...trackingEntries];
 
     const months = dates
       .map(x => x.split('_').shift())
@@ -40,22 +42,18 @@ class Year extends Component {
   };
 
   render({ year }, { months }) {
-    const today = new Date();
     const lastYear = new Date(year, 0, 1);
     lastYear.setFullYear(lastYear.getFullYear() - 1);
 
     const nextYear = new Date(year, 0, 1);
     nextYear.setFullYear(nextYear.getFullYear() + 1);
 
-    const isThisYear = today.getFullYear() === Number(year);
-
     return (
       <div class="wrap lift-children">
         <Traverse
           title={year}
           lastLink={`/${lastYear.getFullYear()}`}
-          nextLink={isThisYear ? '' : `/${nextYear.getFullYear()}`}
-          disableNext={isThisYear}
+          nextLink={`/${nextYear.getFullYear()}`}
         />
         <ul class="year-overview">
           {months.map((count, month) => (
