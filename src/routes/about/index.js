@@ -1,11 +1,9 @@
 import { h } from 'preact';
-import { Link } from 'preact-router/match';
-import { url } from '../../utils/date';
+import { Link } from 'preact-router/match';;
 
 const NotFound = () => (
-  <div class="wrap center home lift-children">
-    <h1>About JournalBook</h1>
-    <img src="/assets/images/study.svg" class="home-image" alt="" />
+  <div class="wrap wrap--thin lift-children">
+    <h1 class="mb20">About JournalBook</h1>
     <div>
       <p>JournalBook is a private, offline-first personal journal.</p>
       <p>

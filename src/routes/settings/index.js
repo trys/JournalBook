@@ -288,6 +288,47 @@ class Settings extends Component {
     return (
       <div class="wrap lift-children">
         <div>
+          <h2>Manage your data</h2>
+
+          {exporting === 2 && files.length ? (
+            <a
+              class="button button--space"
+              download={files[0].name}
+              href={files[0].data}
+              onClick={() => {
+                setTimeout(() => {
+                  this.clean();
+                  this.setState({ exporting: 0 });
+                }, 1500);
+              }}
+            >
+              Click to Download
+            </a>
+          ) : (
+            <button
+              type="button"
+              class={`button button--space button--grey`}
+              onClick={this.prepareExport}
+            >
+              {['Backup', 'Backing up'][exporting]}
+            </button>
+          )}
+
+          <input
+            type="file"
+            class="screen-reader-only"
+            id="import"
+            onChange={this.importData}
+            accept="application/json"
+          />
+          <label for="import" class="button button--grey">
+            {importing ? 'Importing...' : 'Import'}
+          </label>
+
+          <hr />
+        </div>
+
+        <div>
           <h2 class="mb20">Your journaling questions</h2>
           <QuestionList
             questions={questions}
@@ -311,48 +352,6 @@ class Settings extends Component {
           <Link class="button button--grey" href="/add-statistic-question/">
             Add {trackingQuestions.length ? 'another' : 'a'} question
           </Link>
-          <hr />
-        </div>
-
-        <div>
-          <h2>Manage your data</h2>
-
-          {exporting === 2 && files.length ? (
-            <a
-              class="button button--space"
-              download={files[0].name}
-              href={files[0].data}
-              onClick={() => {
-                setTimeout(() => {
-                  this.clean();
-                  this.setState({ exporting: 0 });
-                }, 1500);
-              }}
-            >
-              Click to Download
-            </a>
-          ) : (
-            <button
-              type="button"
-              class={`button button--space button--grey`}
-              onClick={this.prepareExport}
-            >
-              {['Export', 'Exporting'][exporting]}
-            </button>
-          )}
-
-          <input
-            type="file"
-            class="screen-reader-only"
-            id="import"
-            onChange={this.importData}
-            accept="application/json"
-          />
-          <label for="import" class="button button--grey">
-            {importing ? 'Importing...' : 'Import'}
-          </label>
-
-          <ScaryButton onClick={this.deleteData}>Delete your data</ScaryButton>
           <hr />
         </div>
 
@@ -383,6 +382,8 @@ class Settings extends Component {
               <option value="off">Off</option>
             </select>
           </p>
+
+          <ScaryButton onClick={this.deleteData}>Delete your data</ScaryButton>
         </div>
       </div>
     );

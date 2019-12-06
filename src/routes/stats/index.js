@@ -3,7 +3,7 @@ import { connect } from 'unistore/preact';
 import { Link } from 'preact-router/match';
 import Traverse from '../../components/Traverse';
 import { pluralise } from '../../utils/pluralise';
-import { url, parseToUrl } from '../../utils/date';
+import { url } from '../../utils/date';
 import { stopWords } from '../../utils/stat';
 import { getTrackingQuestions, isAnswerValid } from '../../utils/questions';
 
@@ -180,11 +180,9 @@ class Stats extends Component {
             You've also highlighted <strong>{totalHighlights}</strong>{' '}
             {pluralise('day', totalHighlights)}. Check{' '}
             {pluralise('it', totalHighlights, 'them')} out{' '}
-            <Link href="/highlights/">here</Link>
+            <Link href="/highlights/">here</Link>.
           </p>
         ) : null}
-
-        {totalHighlights || totalEntries ? <p>Well done! 👏</p> : null}
 
         {showPopularWords && popularWords.length ? (
           <div>
@@ -224,7 +222,7 @@ class Stats extends Component {
         ) : null}
 
         {totalTrackingEntries ? (
-          <div class="wrap wrap--thin mb40">
+          <div class="mb40">
             <hr />
             <h2>Personal Statistics</h2>
 
@@ -265,9 +263,9 @@ class Stats extends Component {
       !totalTrackingEntries;
 
     return (
-      <div class="wrap lift-children">
-        <Traverse title="Statistics" className="traverse--center" />
-        <div className="pt20 center">{isEmpty ? empty : stats}</div>
+      <div class="wrap wrap--thin lift-children">
+        <h1 class="mb20">Activity log</h1>
+        <div>{isEmpty ? empty : stats}</div>
       </div>
     );
   }
