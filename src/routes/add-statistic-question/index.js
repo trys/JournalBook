@@ -98,7 +98,7 @@ class AddStatisticQuestion extends Component {
     ];
 
     return (
-      <div class="wrap lift-children">
+      <div class="wrap">
         <Traverse
           title="Add a personal statistic to track"
           className="traverse--center mb20"

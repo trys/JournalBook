@@ -548,8 +548,8 @@ input[type='range']:focus::-ms-fill-upper {
 
 /* Questions */
 
-.tracking-question,
-.question {
+.question,
+.tracking-question {
   padding: 20px 0;
 }
 

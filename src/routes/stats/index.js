@@ -161,7 +161,7 @@ class Stats extends Component {
   ) {
     const stats = (
       <div>
-        {totalHighlights ? (
+        {wordCount ? (
           <p>
             You've written <strong>{wordCount}</strong>{' '}
             {pluralise('word', wordCount)} in{' '}
@@ -247,7 +247,13 @@ class Stats extends Component {
               </div>
             ))}
           </div>
-        ) : null}
+        ) : (
+          <div>
+            <Link href="/add-statistic-question/" class="button">
+              Add a personal statistic to track
+            </Link>
+          </div>
+        )}
       </div>
     );
 
