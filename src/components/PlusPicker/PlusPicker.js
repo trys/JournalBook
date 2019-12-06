@@ -28,13 +28,6 @@ class PlusPicker extends Component {
   render({ id, value, settings = {}, onChange }) {
     return (
       <div class="plus-picker u-flex">
-        <button
-          class="button button--mini"
-          type="button"
-          onClick={() => this.removeStep()}
-        >
-          -
-        </button>
         <input
           class="c-input-mini"
           type="number"
@@ -51,6 +44,13 @@ class PlusPicker extends Component {
             );
           }}
         />
+        <button
+          class="button button--mini"
+          type="button"
+          onClick={() => this.removeStep()}
+        >
+          -
+        </button>
         <button
           class="button button--mini"
           type="button"

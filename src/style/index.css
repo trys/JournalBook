@@ -335,11 +335,15 @@ textarea {
 /* Plus Picker */
 
 .plus-picker {
-  width: 200px;
+  width: 150px;
 }
 
 .plus-picker input {
   text-align: center;
+}
+
+.plus-picker button + button {
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 /* Range */
