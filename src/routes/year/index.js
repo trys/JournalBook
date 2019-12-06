@@ -25,7 +25,9 @@ class Year extends Component {
       return;
     }
 
-    const dates = await this.props.db.keys('entries');
+    let dates = await this.props.db.keys('entries');
+    const trackingEntries = await this.props.db.keys('trackingEntries');
+    dates = [...dates, ...trackingEntries];
 
     const months = dates
       .map(x => x.split('_').shift())
