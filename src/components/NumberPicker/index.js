@@ -9,7 +9,7 @@ const NumberPicker = ({ id, value, settings = {}, onChange }) => (
       min={settings.min}
       max={settings.max}
       step={settings.step}
-      autocomplete="off"
+      autocomplete="number-picker"
       onInput={event => {
         onChange(
           event.target.value === ''

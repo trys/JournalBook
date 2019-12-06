@@ -36,7 +36,7 @@ class PlusPicker extends Component {
           min={settings.min}
           max={settings.max}
           step={settings.step}
-          autocomplete="off"
+          autocomplete="plus-picker"
           onInput={event => {
             onChange(
               event.target.value === ''
