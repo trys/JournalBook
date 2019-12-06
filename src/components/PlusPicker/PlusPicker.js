@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 
 class PlusPicker extends Component {
   addStep() {
-    const { max = 10, step = 1 } = this.props.settings;
+    const { max = null, step = 1 } = this.props.settings;
     const value = Number(this.props.value);
     let val = value + step;
 
@@ -14,7 +14,7 @@ class PlusPicker extends Component {
   }
 
   removeStep() {
-    const { min = 0, step = 1 } = this.props.settings;
+    const { min = null, step = 1 } = this.props.settings;
     const value = Number(this.props.value);
     let val = value - step;
 
@@ -47,6 +47,7 @@ class PlusPicker extends Component {
         <button
           class="button button--mini"
           type="button"
+          aria-label="Remove"
           onClick={() => this.removeStep()}
         >
           -
@@ -54,6 +55,7 @@ class PlusPicker extends Component {
         <button
           class="button button--mini"
           type="button"
+          aria-label="Add"
           onClick={() => this.addStep()}
         >
           +
