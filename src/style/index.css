@@ -984,15 +984,15 @@ td.capitalize {
 }
 
 .link-panel--peach {
-  background-color: #f9968d;
+  background: linear-gradient(#f9968d, #d9766d);
 }
 
 .link-panel--rose {
-  background-color: #c44569;
+  background: linear-gradient(#c44569, #a42549);
 }
 
 .link-panel--purple {
-  background-color: #574b90;
+  background: linear-gradient(#574b90, #372b70);
 }
 
 /* Helpers */
