@@ -1,9 +1,8 @@
 import { h, Component } from 'preact';
 import { connect } from 'unistore/preact';
 import { Link } from 'preact-router/match';
-import Traverse from '../../components/Traverse';
 import { pluralise } from '../../utils/pluralise';
-import { url } from '../../utils/date';
+import { url, double, getOffsetToMonday } from '../../utils/date';
 import { stopWords } from '../../utils/stat';
 import { getTrackingQuestions, isAnswerValid } from '../../utils/questions';
 
@@ -20,6 +19,7 @@ class Stats extends Component {
     showPopularWords: false,
     showStopWords: false,
     trackingQuestions: [],
+    statOffset: 0,
   };
 
   componentDidMount() {
@@ -70,10 +70,24 @@ class Stats extends Component {
     const questions = await getTrackingQuestions(this.props.db);
     const answers = await this.props.db.getAll('trackingEntries');
 
+    const now = new Date();
+    const { statOffset } = this.state;
+    const nowNumber = `${now.getFullYear()}${double(
+      now.getMonth() + 1
+    )}${double(now.getDate())}`;
+    const dateFrom = statOffset ? nowNumber - statOffset : 0;
+
     questions.forEach(question => {
       question.answers = answers
         .filter(x => x.questionId === question.id)
-        .filter(x => x.value !== question.default);
+        .filter(x => x.value !== question.default)
+        .filter(answer => {
+          if (!dateFrom) {
+            return true;
+          }
+
+          return Number(answer.dateString) >= dateFrom;
+        });
 
       switch (question.settings.calculation) {
         case 'average':
@@ -157,8 +171,12 @@ class Stats extends Component {
       showPopularWords,
       showStopWords,
       trackingQuestions,
+      statOffset,
     }
   ) {
+    const thisWeek = getOffsetToMonday();
+    const thisMonth = new Date().getDate() - 1;
+
     const stats = (
       <div>
         {wordCount ? (
@@ -224,14 +242,29 @@ class Stats extends Component {
         {totalTrackingEntries ? (
           <div class="mb40">
             <hr />
-            <h2>Personal Statistics</h2>
+            <header class="c-statistic-controls u-flex mb20">
+              <h2>Personal Statistics</h2>
+              <select
+                class="c-select--small"
+                value={statOffset}
+                onChange={event => {
+                  this.setState({ statOffset: Number(event.target.value) });
+                  this.getData();
+                }}
+              >
+                <option value="0">All time</option>
+                <option value="7">7 days</option>
+                <option value={thisWeek}>This week</option>
+                <option value="14">14 days</option>
+                <option value="30">30 days</option>
+                <option value={thisMonth}>This month</option>
+                <option value="365">365 days</option>
+              </select>
+            </header>
 
             <p>
               You've tracked {totalTrackingEntries} personal{' '}
               {pluralise('statistic', totalTrackingEntries)} on JournalBook.
-              {trackingQuestions.length ? (
-                <span> Here's a selection:</span>
-              ) : null}
             </p>
 
             {trackingQuestions.map(question => (
