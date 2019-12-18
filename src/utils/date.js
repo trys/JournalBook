@@ -27,6 +27,11 @@ export const url = (date = new Date(), suffix = '') =>
 
 export const pad = n => (n < 10 ? '0' : '') + n;
 
+export const getOffsetToMonday = (d = new Date()) => {
+  const day = d.getDay();
+  return day - (!day ? -6 : 1);
+};
+
 export const ymd = (date = new Date()) => {
   const y = date.getFullYear();
   const m = pad(date.getMonth() + 1);

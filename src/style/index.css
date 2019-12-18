@@ -291,6 +291,14 @@ textarea {
   max-height: 50vh;
 }
 
+.c-select--small {
+  font-size: 16px;
+  padding: 0.375rem 1.5rem 0.375rem 0.5rem;
+  background-position: right 0.5rem center;
+  width: auto;
+  margin: 0;
+}
+
 .c-checkbox {
   display: flex;
 }
@@ -993,6 +1001,14 @@ td.capitalize {
 
 .link-panel--purple {
   background: linear-gradient(#574b90, #372b70);
+}
+
+.c-statistic-controls {
+  justify-content: space-between;
+}
+
+.c-statistic-controls h2 {
+  margin: 0;
 }
 
 /* Helpers */
