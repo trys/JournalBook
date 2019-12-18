@@ -32,6 +32,16 @@ export const getOffsetToMonday = (d = new Date()) => {
   return day - (!day ? -6 : 1);
 };
 
+/**
+ * @link https://www.devcurry.com/2011/08/javascript-find-day-of-year.html
+ */
+export const getOffsetToYear = () => {
+  const timestmp = new Date().setFullYear(new Date().getFullYear(), 0, 1);
+  const yearFirstDay = Math.floor(timestmp / 86400000);
+  const today = Math.ceil(new Date().getTime() / 86400000);
+  return today - yearFirstDay;
+};
+
 export const ymd = (date = new Date()) => {
   const y = date.getFullYear();
   const m = pad(date.getMonth() + 1);

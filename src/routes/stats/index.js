@@ -2,7 +2,12 @@ import { h, Component } from 'preact';
 import { connect } from 'unistore/preact';
 import { Link } from 'preact-router/match';
 import { pluralise } from '../../utils/pluralise';
-import { url, double, getOffsetToMonday } from '../../utils/date';
+import {
+  url,
+  double,
+  getOffsetToMonday,
+  getOffsetToYear,
+} from '../../utils/date';
 import { stopWords } from '../../utils/stat';
 import { getTrackingQuestions, isAnswerValid } from '../../utils/questions';
 
@@ -176,6 +181,7 @@ class Stats extends Component {
   ) {
     const thisWeek = getOffsetToMonday();
     const thisMonth = new Date().getDate() - 1;
+    const thisYear = getOffsetToYear();
 
     const stats = (
       <div>
@@ -254,11 +260,12 @@ class Stats extends Component {
               >
                 <option value="0">All time</option>
                 <option value="7">7 days</option>
-                <option value={thisWeek}>This week</option>
                 <option value="14">14 days</option>
                 <option value="30">30 days</option>
-                <option value={thisMonth}>This month</option>
                 <option value="365">365 days</option>
+                <option value={thisWeek}>This week</option>
+                <option value={thisMonth}>This month</option>
+                <option value={thisYear}>This year</option>
               </select>
             </header>
 
