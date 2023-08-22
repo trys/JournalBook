@@ -319,7 +319,7 @@ class Settings extends Component {
             class="screen-reader-only"
             id="import"
             onChange={this.importData}
-            accept="application/json"
+            accept=".json,application/json"
           />
           <label for="import" class="button button--grey">
             {importing ? 'Importing...' : 'Import'}
