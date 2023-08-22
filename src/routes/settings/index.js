@@ -181,6 +181,9 @@ class Settings extends Component {
   importData = async event => {
     const reader = new FileReader();
     const file = event.target.files[0];
+
+    // if (!file.type.includes('json')) return;
+
     this.setState({ importing: true });
 
     reader.onload = (() => async e => {
@@ -319,7 +322,7 @@ class Settings extends Component {
             class="screen-reader-only"
             id="import"
             onChange={this.importData}
-            accept=".json,application/json"
+            // accept=".json,application/json"
           />
           <label for="import" class="button button--grey">
             {importing ? 'Importing...' : 'Import'}
