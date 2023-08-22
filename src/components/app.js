@@ -32,6 +32,12 @@ class App extends Component {
 
   async componentDidMount() {
     try {
+      try {
+        if (navigator.storage && navigator.storage.persist) {
+          navigator.storage.persist();
+        }
+      } catch (error) {}
+
       const version = 5;
       const dbPromise = openDb('entries-store', version, udb => {
         switch (udb.oldVersion) {
